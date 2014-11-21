@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kawung2011.labs.logmee" >
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.kawung2011.labs.logmee.MainActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.kawung2011.labs.logmee.SplashActivity"
+            android:label="@string/title_activity_splash"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.kawung2011.labs.logmee.ActCreateActivity"
+            android:label="@string/title_activity_act_create" >
+        </activity>
+        <activity
+            android:name="com.kawung2011.labs.logmee.LogAddImagesActivity"
+            android:label="@string/title_activity_test_camera" >
+        </activity>
+        <activity
+            android:name="com.kawung2011.labs.logmee.LogAddAudioActivity"
+            android:label="@string/title_activity_audio_record_test" >
+        </activity>
+        <activity
+            android:name="com.kawung2011.labs.logmee.ActViewActivity"
+            android:label="@string/title_activity_act_view" >
+        </activity>
+        <activity
+            android:name=".LogCreateActivity"
+            android:label="@string/title_activity_log_view" >
+        </activity>
+    </application>
+
+</manifest>
