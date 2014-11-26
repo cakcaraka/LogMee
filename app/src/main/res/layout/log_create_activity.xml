@@ -7,17 +7,20 @@
     android:orientation="vertical"
     tools:context="com.kawung2011.labs.logmee.LogCreateActivity">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText_log_text" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Images"
-        android:id="@+id/btnAddImages"
-        android:layout_gravity="left|top" />
+        android:id="@+id/btnAddImages" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Sound"
-        android:id="@+id/btnAddSound"
-        android:layout_gravity="left|top" />
+        android:id="@+id/btnAddSound" />
 </LinearLayout>

@@ -14,5 +14,13 @@
         android:id="@+id/btnAddLog"
         android:layout_gravity="left|top" />
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewLogs"
+        android:layout_below="@+id/btnAddLog"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>

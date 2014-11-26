@@ -8,12 +8,17 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
@@ -64,7 +69,7 @@ public class ActAdminFragment extends Fragment {
             }
         });
 
-        Button button2 = (Button) rootView.findViewById(R.id.btnViewActivity);
+        /*Button button2 = (Button) rootView.findViewById(R.id.btnViewActivity);
         button2.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -75,16 +80,9 @@ public class ActAdminFragment extends Fragment {
 
                 startActivity(i);
             }
-        });
-        DBHandler db = new DBHandler(this.getActivity(), null);
-        List<Activities> list = db.getAllActivities();
-        String activities = "";
-        for(int i=0; i < list.size(); i++) {
-            activities += list.get(i).toString() +"\n";
-        }
-        if(activities.equals("")) activities = "belum ada activity";
-        TextView text = (TextView) rootView.findViewById(R.id.activities);
-        text.setText(activities);
+        });*/
+
+        displayListView(rootView);
         return rootView;
     }
 
@@ -95,5 +93,60 @@ public class ActAdminFragment extends Fragment {
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
+    private void displayListView(View rootView) {
+            DBHandler db = new DBHandler(this.getActivity(),null);
+            Cursor cursor = db.fetchAllActivitiesInMain();
 
+            // The desired columns to be bound
+            String[] columns = new String[] {
+                    DBHandler.getaId(),
+                    DBHandler.getaName(),
+                    DBHandler.getaStatus(),
+                    DBHandler.getaImg(),
+                    DBHandler.getaDateTime(),
+                    DBHandler.getaCountText(),
+                    DBHandler.getaCountImage(),
+                    DBHandler.getaCountSpeech()
+            };
+
+            // the XML defined views which the data will be bound to
+            int[] to = new int[] {
+                    R.id.textViewAId,
+                    R.id.textViewAName,
+                    R.id.textViewAStatus,
+                    R.id.textViewAImage,
+                    R.id.textViewADateTime,
+                    R.id.textViewACText,
+                    R.id.textViewACImage,
+                    R.id.textViewACSpeech
+            };
+
+            // create the adapter using the cursor pointing to the desired data
+            //as well as the layout information
+            SimpleCursorAdapter dataAdapter = new SimpleCursorAdapter(
+                    this.getActivity(), R.layout.act_info,
+                    cursor,
+                    columns,
+                    to,
+                    0);
+            ListView listView = (ListView) rootView.findViewById(R.id.listViewActivities);
+            // Assign adapter to ListView
+            listView.setAdapter(dataAdapter);
+
+            final View onClickView = rootView;
+            Activity ctx = getActivity();
+            final Intent intent = new Intent(ctx, ActViewActivity.class);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> listView, View view, int position, long id) {
+                    // Get the cursor, positioned to the corresponding row in the result set
+                    Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+                    // Get the state's capital from this row in the database.
+                    String idActivity = cursor.getString(cursor.getColumnIndexOrThrow("_id"));
+                    intent.putExtra("_id", idActivity);
+                    startActivity(intent);
+                }
+            });
+
+    }
 }

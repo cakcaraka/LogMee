@@ -14,8 +14,11 @@ public class Logs {
     private String _latitude;
     private String _dateTime;
 
-    public Logs(int _id, int _activiy_id, String _text, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
-        this._id = _id;
+    public Logs() {
+
+    }
+
+    public Logs(int _activiy_id, String _text, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
         this._activiy_id = _activiy_id;
         this._text = _text;
         this._image = _image;
@@ -96,5 +99,10 @@ public class Logs {
 
     public void set_latitude(String _latitude) {
         this._latitude = _latitude;
+    }
+
+    @Override
+    public String toString(){
+        return this.get_id() + "," + this.get_activiy_id() + "," + this.get_text()+ "," + this.get_image() + "," + this.get_speech() + "," + this.get_location() + "," + this.get_longitude() + "," + this.get_latitude() + "," + this.get_dateTime();
     }
 }

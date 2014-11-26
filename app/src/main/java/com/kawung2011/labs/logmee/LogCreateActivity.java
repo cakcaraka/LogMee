@@ -7,6 +7,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
+
+import java.util.List;
 
 
 public class LogCreateActivity extends Activity {
@@ -61,8 +70,25 @@ public class LogCreateActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if(id == R.id.action_create_log){
+            createLog();
+        } else if (id==android.R.id.home) {
+            finish();
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createLog() {
+        EditText et = (EditText) findViewById(R.id.editText_log_text);
+        Intent intent = getIntent();
+        int id = Integer.parseInt(intent.getStringExtra("_id"));
+
+        if(et.getText().toString().equals("")){
+            Toast.makeText(getApplicationContext(), "Text can't be empty", Toast.LENGTH_SHORT).show();
+        }else{
+            DBHandler db = new DBHandler(this, null);
+            db.addLogs(new Logs(id, et.getText().toString(), "", "", "", "", "", ""));
+            Toast.makeText(getApplicationContext(),et.getText(),Toast.LENGTH_SHORT).show();
+        }
     }
 }
