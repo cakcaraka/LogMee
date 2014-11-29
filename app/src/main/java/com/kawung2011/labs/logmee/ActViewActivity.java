@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +59,15 @@ public class ActViewActivity extends Activity {
 
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if(v.getId() == R.id.listViewLogs) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle("judul menu");
+            menu.add(Menu.NONE, 0, 0, "update");
+            menu.add(Menu.NONE, 1, 1, "delete");
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

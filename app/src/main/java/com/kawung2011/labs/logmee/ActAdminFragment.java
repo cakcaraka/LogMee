@@ -5,12 +5,19 @@ package com.kawung2011.labs.logmee;
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,8 +28,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -64,24 +73,9 @@ public class ActAdminFragment extends Fragment {
             {
                 Intent i = new Intent(ctx, ActCreateActivity.class);
                 //Intent i = new Intent(ctx, TestAudioRecord.class);
-
                 startActivity(i);
             }
         });
-
-        /*Button button2 = (Button) rootView.findViewById(R.id.btnViewActivity);
-        button2.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(ctx, ActViewActivity.class);
-                //Intent i = new Intent(ctx, TestAudioRecord.class);
-
-                startActivity(i);
-            }
-        });*/
-
         displayListView(rootView);
         return rootView;
     }
@@ -93,10 +87,19 @@ public class ActAdminFragment extends Fragment {
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-    private void displayListView(View rootView) {
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if(v.getId() == R.id.listViewActivities) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle("judul menu");
+            menu.add(Menu.NONE, 0, 0, "update");
+            menu.add(Menu.NONE, 1, 1, "delete");
+        }
+    }
+
+    private void displayListView(final View rootView) {
             DBHandler db = new DBHandler(this.getActivity(),null);
             Cursor cursor = db.fetchAllActivitiesInMain();
-
             // The desired columns to be bound
             String[] columns = new String[] {
                     DBHandler.getaId(),
@@ -148,5 +151,41 @@ public class ActAdminFragment extends Fragment {
                 }
             });
 
+            /*listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+
+                @Override
+                public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                    if(v.getId() == R.id.listViewActivities) {
+                        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+                        menu.setHeaderTitle("judul menu");
+                        menu.add(Menu.NONE, 0, 0, "update");
+                        menu.add(Menu.NONE, 1, 1, "delete");
+                    }
+                }
+
+                @Override
+                public boolean onContextItemSelected(MenuItem item) {
+                    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+                    int menuItemIndex = item.getItemId();
+                    TextView text = (TextView) rootView.findViewById(R.id.textViewSelected);
+                    text.setText(menuItemIndex);
+                    return true;
+                }
+
+
+            });*/
     }
 }
+
+/* TRASH CODE
+*
+   DBHandler db = new DBHandler(this.getActivity(), null);
+   Activities actitvity = db.findActivityByName("Tekmob");
+   actitvity.set_name("Teknologi Mobil Balap");
+   db.updateActivity(actitvity);
+   Logs log = db.findLog(6);
+   log.set_text("guerilla testing");
+   db.updateLog(log);
+*
+*
+* */

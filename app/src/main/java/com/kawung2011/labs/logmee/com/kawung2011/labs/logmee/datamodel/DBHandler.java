@@ -49,7 +49,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sql = "create table " + TABLE_ACTIVITIES + " (" + A_ID + " integer primary key  AUTOINCREMENT NOT NULL, " +
                 A_NAME + " text, " +
-                A_STATUS + " text, " +
+                A_STATUS + " integer, " +
                 A_IMG + " text, " +
                 A_DATE_TIME + " text, " +
                 A_COUNT_TEXT + " integer, " +
@@ -71,9 +71,9 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     private void insertSomeData(SQLiteDatabase db) {
-        db.execSQL("insert into activities values(0, \"Tekmob\", \"in progress\", \"image Tekmob\", \"24/11/2014\", 0, 0, 0);");
-        db.execSQL("insert into activities values(1, \"PMPL\", \"in progres\", \"image pmpl\", \"24/11/2014\", 0, 0, 0);");
-        db.execSQL("insert into activities values(2, \"Sister\", \"in progres\", \"image sister\", \"24/11/2014\", 0, 0, 0);");
+        db.execSQL("insert into activities values(0, \"Tekmob\", 0, \"image Tekmob\", \"24/11/2014\", 0, 0, 0);");
+        db.execSQL("insert into activities values(1, \"PMPL\", 0, \"image pmpl\", \"24/11/2014\", 0, 0, 0);");
+        db.execSQL("insert into activities values(2, \"Sister\", 1, \"image sister\", \"24/11/2014\", 0, 0, 0);");
         db.execSQL("insert into logs values(0, 0, \"Brainstorming ide\", \"image brainstorming\", \"speech brainstorming\", \"kantin\", \"-1.4\" , \"1.5\", \"24/11/2014\");");
         db.execSQL("insert into logs values(1, 0, null, \"image sketch\", null, \"kantin\", \"-1.4\" , \"1.5\", \"24/11/2014\");");
         db.execSQL("insert into logs values(2, 0, null, \"image mock up\", null, \"perpustakaan\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
@@ -90,6 +90,8 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /* Activities Qeury */
+
     public void addActivities(Activities activity) {
         ContentValues values = new ContentValues();
         values.put(A_NAME, activity.get_name());
@@ -99,44 +101,28 @@ public class DBHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_ACTIVITIES, null, values);
-
         db.close();
     }
 
-    public List<Activities> getAllActivitiesInMain() {
-        List<Activities> listActivities = new ArrayList<Activities>();
-        // Select All Query
+    public void updateActivity(Activities activity) {
+        ContentValues values = new ContentValues();
+        values.put(A_NAME, activity.get_name());
+        values.put(A_STATUS, activity.get_status());
+        values.put(A_IMG, activity.get_image());
+        values.put(A_DATE_TIME, activity.get_dateTime());
 
-        String selectQuery =
-                "select id, name, status, image, dateTime, ifnull(count_text,0), ifnull(count_image,0), ifnull(count_speech,0)\n" +
-                "from activities left join\n" +
-                "(select activity, count_text, count_image, count_speech from\n" +
-                "(select activity, count(text) as count_text from logs group by activity) natural join\n" +
-                "(select activity, count(image) as count_image from logs group by activity) natural join\n" +
-                "(select activity, count(speech) as count_speech from logs group by activity))\n" +
-                "on id = activity;";
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        int id = activity.get_id();
+        db.update(TABLE_ACTIVITIES, values, "_id ="+id, null );
+        db.close();
+    }
 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Activities activity = new Activities();
-                activity.set_id(Integer.parseInt(cursor.getString(0)));
-                activity.set_name(cursor.getString(1));
-                activity.set_status(cursor.getString(2));
-                activity.set_image(cursor.getString(3));
-                activity.set_dateTime(cursor.getString(4));
-                activity.set_count_logs_text(Integer.parseInt(cursor.getString(5)));
-                activity.set_count_logs_image(Integer.parseInt(cursor.getString(6)));
-                activity.set_count_logs_speech(Integer.parseInt(cursor.getString(7)));
+    public void deleteActivity(Activities activity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int id = activity.get_id();
 
-                // Adding contact to list
-                listActivities.add(activity);
-            } while (cursor.moveToNext());
-        }
-        // return contact list
-        return listActivities;
+        db.delete(TABLE_ACTIVITIES, "_id ="+id, null);
+        db.close();
     }
 
     public Cursor fetchAllActivitiesInMain() {
@@ -149,9 +135,9 @@ public class DBHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor fetchAllLogsById(int id) {
+    public Cursor fetchAllUncompleteActivities() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "select * from logs where activity = " +id+";";
+        String selectQuery = "select * from activities where status = 0";
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -159,35 +145,16 @@ public class DBHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
-
-
-    public List<Activities> getAllActivities() {
-        List<Activities> listActivities = new ArrayList<Activities>();
-        // Select All Query
-        String selectQuery = "SELECT * FROM " + TABLE_ACTIVITIES;
-
+    public Cursor fetchAllCompleteActivities() {
         SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "select * from activities where status = 1";
         Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Activities activity = new Activities();
-                activity.set_id(Integer.parseInt(cursor.getString(0)));
-                activity.set_name(cursor.getString(1));
-                activity.set_status(cursor.getString(2));
-                activity.set_image(cursor.getString(3));
-                activity.set_dateTime(cursor.getString(4));
-
-                // Adding contact to list
-                listActivities.add(activity);
-            } while (cursor.moveToNext());
+        if (cursor != null) {
+            cursor.moveToFirst();
         }
-
-        // return contact list
-        return listActivities;
+        return cursor;
     }
-    
+
     public Activities findActivity(int activityId) {
         String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_ID + " = " + activityId;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -208,12 +175,41 @@ public class DBHandler extends SQLiteOpenHelper {
         return activity;
     }
 
+    public Activities findActivityByName(String activityName) {
+        String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_NAME + " = \"" + activityName +"\"";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Activities activity = new Activities();
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            activity.set_id(Integer.parseInt(cursor.getString(0)));
+            activity.set_name(cursor.getString(1));
+            activity.set_status(cursor.getString(2));
+            activity.set_image(cursor.getString(3));
+            activity.set_dateTime(cursor.getString(4));
+            cursor.close();
+        } else {
+            activity = null;
+        }
+        db.close();
+        return activity;
+    }
+
+    /* Log Query */
+
     public void addLogs(Logs log) {
         ContentValues values = new ContentValues();
         values.put(L_ACTIVITY, log.get_activiy_id());
+        Activities activity = findActivity(log.get_activiy_id());
+
         values.put(L_TEXT, log.get_text());
+        if(log.get_text() != null) activity.set_count_logs_text(activity.get_count_logs_text()+1);
         values.put(L_IMG, log.get_image());
+        if(log.get_image() != null) activity.set_count_logs_image(activity.get_count_logs_image()+1);
         values.put(L_SPEECH, log.get_speech());
+        if(log.get_speech() != null) activity.set_count_logs_speech(activity.get_count_logs_speech()+1);
+        updateActivity(activity);
+
         values.put(L_LOCATION, log.get_location());
         values.put(L_LOCATION_LATITUDE, log.get_latitude());
         values.put(L_LOCATION_LONGITUDE, log.get_longitude());
@@ -225,34 +221,97 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Logs> getAllLogs() {
-        List<Logs> listLogs = new ArrayList<Logs>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_LOGS;
+    public void updateLog(Logs log) {
+        ContentValues values = new ContentValues();
+        values.put(L_ACTIVITY, log.get_activiy_id());
+        values.put(L_TEXT, log.get_text());
+        values.put(L_IMG, log.get_image());
+        values.put(L_SPEECH, log.get_speech());
+        values.put(L_LOCATION, log.get_location());
+        values.put(L_LOCATION_LONGITUDE, log.get_longitude());
+        values.put(L_LOCATION_LATITUDE, log.get_latitude());
+        values.put(L_DATE_TIME, log.get_dateTime());
+
+        Activities activity = findActivity(log.get_activiy_id());
+        Logs oldLog = findLog(log.get_id());
+        if(oldLog.get_text() == null && log.get_text() != null) {
+            activity.set_count_logs_text(activity.get_count_logs_text()+1);
+        } else if(oldLog.get_text() != null & log.get_text() == null){
+            activity.set_count_logs_text(activity.get_count_logs_text()-1);
+        }
+        if(oldLog.get_image() == null && log.get_image() != null) {
+            activity.set_count_logs_image(activity.get_count_logs_image()+1);
+        } else if(oldLog.get_image() != null & log.get_image() == null){
+            activity.set_count_logs_image(activity.get_count_logs_image()-1);
+        }
+
+        if(oldLog.get_speech() == null && log.get_speech() != null) {
+            activity.set_count_logs_speech(activity.get_count_logs_speech()+1);
+        } else if(oldLog.get_speech() != null & log.get_speech() == null){
+            activity.set_count_logs_speech(activity.get_count_logs_speech()-1);
+        }
+        updateActivity(activity);
+
+
+
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        int id = log.get_id();
+        db.update(TABLE_LOGS, values, "_id ="+id, null );
+        db.close();
+    }
 
-        // looping through all rows and adding to list
+    public void deleteLog(Logs log) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int id = log.get_id();
+        Activities activity = findActivity(log.get_activiy_id());
 
+        if(log.get_text() != null) activity.set_count_logs_text(activity.get_count_logs_text()-1);
+        if(log.get_image() != null) activity.set_count_logs_image(activity.get_count_logs_image()-1);
+        if(log.get_speech() != null) activity.set_count_logs_speech(activity.get_count_logs_speech()-1);
+        updateActivity(activity);
+
+        db.delete(TABLE_LOGS, "_id ="+id, null);
+        db.close();
+    }
+
+    public void deleteAllLogByActivity(int activityId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+TABLE_LOGS+" where activity = "+activityId);
+    }
+
+    public Logs findLog(int logId) {
+        String query = "Select * FROM " + TABLE_LOGS + " WHERE " + L_ID + " = " + logId;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Logs log = new Logs();
         if (cursor.moveToFirst()) {
-            do {
-                Logs log = new Logs();
-                log.set_id(Integer.parseInt(cursor.getString((0))));
-                log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
-                log.set_text(cursor.getString(2));
-                log.set_image(cursor.getString(3));
-                log.set_speech(cursor.getString(4));
-                log.set_location(cursor.getString(5));
-                log.set_longitude(cursor.getString(6));
-                log.set_latitude(cursor.getString(7));
-                log.set_dateTime(cursor.getString(8));
-                // Adding contact to list
-                listLogs.add(log);
-            } while (cursor.moveToNext());
+            cursor.moveToFirst();
+            log.set_id(Integer.parseInt(cursor.getString(0)));
+            log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
+            log.set_text(cursor.getString(2));
+            log.set_image(cursor.getString(3));
+            log.set_speech(cursor.getString(4));
+            log.set_location(cursor.getString(5));
+            log.set_longitude(cursor.getString(6));
+            log.set_latitude(cursor.getString(7));
+            log.set_dateTime(cursor.getString(8));
+            cursor.close();
+        } else {
+            log = null;
         }
-        // return contact list
-        return listLogs;
+        db.close();
+        return log;
+    }
+
+    public Cursor fetchAllLogsById(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "select * from logs where activity = " +id+";";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
     }
 
     public static String getTag() {
@@ -343,6 +402,98 @@ public class DBHandler extends SQLiteOpenHelper {
         return L_DATE_TIME;
     }
 
-
-
 }
+
+/*
+* TRASH CODE
+        String selectQuery =
+                "select id, name, status, image, dateTime, ifnull(count_text,0), ifnull(count_image,0), ifnull(count_speech,0)\n" +
+                "from activities left join\n" +
+                "(select activity, count_text, count_image, count_speech from\n" +
+                "(select activity, count(text) as count_text from logs group by activity) natural join\n" +
+                "(select activity, count(image) as count_image from logs group by activity) natural join\n" +
+                "(select activity, count(speech) as count_speech from logs group by activity))\n" +
+                "on id = activity;";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Activities activity = new Activities();
+                activity.set_id(Integer.parseInt(cursor.getString(0)));
+                activity.set_name(cursor.getString(1));
+                activity.set_status(cursor.getString(2));
+                activity.set_image(cursor.getString(3));
+                activity.set_dateTime(cursor.getString(4));
+                activity.set_count_logs_text(Integer.parseInt(cursor.getString(5)));
+                activity.set_count_logs_image(Integer.parseInt(cursor.getString(6)));
+                activity.set_count_logs_speech(Integer.parseInt(cursor.getString(7)));
+
+                // Adding contact to list
+                listActivities.add(activity);
+            } while (cursor.moveToNext());
+        }
+        // return contact list
+        return listActivities;
+    }
+
+	public List<Activities> getAllActivities() {
+        List<Activities> listActivities = new ArrayList<Activities>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM " + TABLE_ACTIVITIES;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Activities activity = new Activities();
+                activity.set_id(Integer.parseInt(cursor.getString(0)));
+                activity.set_name(cursor.getString(1));
+                activity.set_status(cursor.getString(2));
+                activity.set_image(cursor.getString(3));
+                activity.set_dateTime(cursor.getString(4));
+
+                // Adding contact to list
+                listActivities.add(activity);
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return listActivities;
+    }
+
+    public List<Logs> getAllLogs() {
+        List<Logs> listLogs = new ArrayList<Logs>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_LOGS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                Logs log = new Logs();
+                log.set_id(Integer.parseInt(cursor.getString((0))));
+                log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
+                log.set_text(cursor.getString(2));
+                log.set_image(cursor.getString(3));
+                log.set_speech(cursor.getString(4));
+                log.set_location(cursor.getString(5));
+                log.set_longitude(cursor.getString(6));
+                log.set_latitude(cursor.getString(7));
+                log.set_dateTime(cursor.getString(8));
+                // Adding contact to list
+                listLogs.add(log);
+            } while (cursor.moveToNext());
+        }
+        // return contact list
+        return listLogs;
+    }
+
+*
+* */
