@@ -96,7 +96,9 @@ public class LogAddAudioActivity extends Activity
 
         mSubmitButton = (Button) findViewById(R.id.submitSound);
         mSubmitButton.setVisibility(View.INVISIBLE);
-        mPlayButton.setOnClickListener(new View.OnClickListener(){
+        Button mSaveButton = (Button) findViewById(R.id.submitSound);
+
+        mSaveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 saveAudio();
