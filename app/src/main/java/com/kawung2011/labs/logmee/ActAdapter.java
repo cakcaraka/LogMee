@@ -1,6 +1,5 @@
 package com.kawung2011.labs.logmee;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -61,7 +60,7 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
     public ActViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.
                 from(viewGroup.getContext()).
-                inflate(R.layout.card_activity, viewGroup, false);
+                inflate(R.layout.act_card, viewGroup, false);
         return new ActViewHolder(itemView);
     }
 

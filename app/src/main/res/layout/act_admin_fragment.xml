@@ -1,38 +1,67 @@
+<!--suppress ALL -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:orientation="vertical"
-    tools:context="com.kawung2011.labs.logmee.ActAdminFragment"
-    android:weightSum="1">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="Activity"
-     />
+    <!-- Toolbar -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textViewSelected"
-        android:layout_gravity="right" />
+    <include layout="@layout/toolbar" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Activity"
-        android:id="@+id/btnAddActivity"
-        android:layout_gravity="left|top" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/activities" />
-
-    <ListView
+    <android.support.v4.widget.DrawerLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listViewActivities"
-        android:layout_gravity="center_horizontal" />
+        android:id="@+id/drawerLayout"
+        android:layout_height="match_parent">
+        <!-- content -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:background="@color/background"
+            android:layout_height="match_parent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp">
+            <ImageButton
+                android:id="@+id/add_button"
+                android:tint="@android:color/white"
+                android:background="@drawable/circular_button"
+                android:elevation="100dp"
+                android:layout_width="@dimen/round_button_diameter"
+                android:layout_height="@dimen/round_button_diameter"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="@dimen/add_button_margin"
+                android:layout_marginEnd="@dimen/add_button_margin"
+                android:src="@android:drawable/ic_input_add"
+                android:cropToPadding="true"
+                android:focusable="false"
+                android:baselineAlignBottom="false" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/cardList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+
+
+        <!-- nav drawer -->
+        <LinearLayout
+            android:layout_gravity="start"
+            android:orientation="vertical"
+            android:background="#fff"
+            android:layout_width="240dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/navigation_bar"></include>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>

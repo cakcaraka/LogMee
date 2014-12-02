@@ -65,7 +65,7 @@ public class ActAdminFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.act_admin_fragment, container, false);
         final Activity ctx = this.getActivity();
 
-        Button button = (Button) rootView.findViewById(R.id.btnAddActivity);
+        /*Button button = (Button) rootView.findViewById(R.id.btnAddActivity);
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -76,7 +76,7 @@ public class ActAdminFragment extends Fragment {
                 startActivity(i);
             }
         });
-        displayListView(rootView);
+        displayListView(rootView);*/
         return rootView;
     }
 
@@ -89,12 +89,12 @@ public class ActAdminFragment extends Fragment {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v.getId() == R.id.listViewActivities) {
+       /* if(v.getId() == R.id.listViewActivities) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
             menu.setHeaderTitle("judul menu");
             menu.add(Menu.NONE, 0, 0, "update");
             menu.add(Menu.NONE, 1, 1, "delete");
-        }
+        }*/
     }
 
     private void displayListView(final View rootView) {

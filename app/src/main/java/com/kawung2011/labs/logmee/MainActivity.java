@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("s","resume");
+        
         if(recList != null){
             DBHandler db = new DBHandler(this,null);
             List<Activities> acts = db.fetchAllActivities();

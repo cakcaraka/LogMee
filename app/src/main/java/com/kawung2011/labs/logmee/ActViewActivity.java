@@ -47,6 +47,8 @@ public class ActViewActivity extends ActionBarActivity {
         if (toolbar != null) {
             toolbar.setTitle(act.get_name());
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
         }
 
         final int ii = id;
@@ -85,5 +87,16 @@ public class ActViewActivity extends ActionBarActivity {
             recList.setAdapter(actAdapter);
 
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
