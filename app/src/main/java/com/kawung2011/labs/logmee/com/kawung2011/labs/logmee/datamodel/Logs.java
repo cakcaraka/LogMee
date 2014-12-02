@@ -22,7 +22,7 @@ public class Logs {
 
     }
     public Logs(int _activiy_id,String text){
-        this(_activiy_id,text,"","","","","",new Timestamp(new Date().getTime()).toString());
+        this(_activiy_id,text,null,null,null,null,null,new Timestamp(new Date().getTime()).toString());
     }
     public Logs(int _activiy_id, String _text, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
         this._activiy_id = _activiy_id;

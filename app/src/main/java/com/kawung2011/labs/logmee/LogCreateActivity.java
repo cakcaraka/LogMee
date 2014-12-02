@@ -24,7 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 
@@ -43,14 +43,26 @@ public class LogCreateActivity extends ActionBarActivity {
     private int REQ_CAM = 1;
     private int REQ_GAL = 2;
     private LinearLayout mediaLayout;
+    private int log_id;
+    private int act_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_create_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mediaLayout = (LinearLayout) findViewById(R.id.mediaLayout);
+
+
+        DBHandler db = new DBHandler(this,null);
         Intent intent = getIntent();
-        id = intent.getIntExtra("_id",0);
+        log_id = intent.getIntExtra("log_id",-1);
+        act_id = intent.getIntExtra("_id", -1);
+        if(log_id != -1) {
+            Logs log = db.findLog(log_id);
+            EditText txt = (EditText) findViewById(R.id.editText_log_title);
+            txt.setText(log.get_text());
+        }
 
         if (toolbar != null) {
             toolbar.setTitle("Create Log" + id);
@@ -63,7 +75,7 @@ public class LogCreateActivity extends ActionBarActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent = new   Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent = new   Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQ_GAL);
             }
         });
@@ -74,7 +86,7 @@ public class LogCreateActivity extends ActionBarActivity {
             public void onClick(View v)
             {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                File f = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
                 startActivityForResult(intent, REQ_CAM);
             }
@@ -126,7 +138,13 @@ public class LogCreateActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(), "Text can't be empty", Toast.LENGTH_SHORT).show();
         }else{
             DBHandler db = new DBHandler(this, null);
-            db.addLogs(new Logs(id, et.getText().toString()));
+            if(log_id != -1) {
+                Logs log = db.findLog(log_id);
+                log.set_text(et.getText().toString());
+                id = db.updateLog(log);
+            } else {
+                db.addLogs(new Logs(act_id, et.getText().toString()));
+            }
             finish();
             Toast.makeText(getApplicationContext(),et.getText(),Toast.LENGTH_SHORT).show();
         }

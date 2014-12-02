@@ -1,25 +1,14 @@
 package com.kawung2011.labs.logmee;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
@@ -59,6 +48,7 @@ public class ActViewActivity extends ActionBarActivity {
                 Intent i = new Intent(ActViewActivity.this, LogCreateActivity.class);
                 Log.d("d", ""+ii);
                 i.putExtra("_id", ii);
+
                 startActivity(i);
             }
         });
@@ -70,18 +60,18 @@ public class ActViewActivity extends ActionBarActivity {
         recList.setLayoutManager(llm);
 
         List<Logs> logs = db.fetchAllLogsById(id);
-
-        LogAdapter actAdapter = new LogAdapter(logs,getApplicationContext());
+        LogAdapter actAdapter = new LogAdapter(logs,getApplicationContext(), ActViewActivity.this);
         recList.setAdapter(actAdapter);
-
+        registerForContextMenu(recList);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         if(recList != null){
             DBHandler db = new DBHandler(this,null);
             List<Logs> logs = db.fetchAllLogsById(id);
-            LogAdapter actAdapter = new LogAdapter(logs,getApplicationContext());
+            LogAdapter actAdapter = new LogAdapter(logs,getApplicationContext(), ActViewActivity.this);
             recList.setAdapter(actAdapter);
 
         }

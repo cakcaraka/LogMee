@@ -1,5 +1,6 @@
 package com.kawung2011.labs.logmee;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
@@ -10,13 +11,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 
 import java.util.List;
 
@@ -61,8 +67,9 @@ public class MainActivity extends ActionBarActivity {
         DBHandler db = new DBHandler(this,null);
         List<Activities> acts = db.fetchAllActivities();
 
-        ActAdapter actAdapter = new ActAdapter(acts,getApplicationContext());
+        ActAdapter actAdapter = new ActAdapter(acts,getApplicationContext(), MainActivity.this);
         recList.setAdapter(actAdapter);
+
     }
 
     @Override
@@ -72,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
         if(recList != null){
             DBHandler db = new DBHandler(this,null);
             List<Activities> acts = db.fetchAllActivities();
-            ActAdapter actAdapter = new ActAdapter(acts,getApplicationContext());
+            ActAdapter actAdapter = new ActAdapter(acts,getApplicationContext(), MainActivity.this);
             recList.setAdapter(actAdapter);
             Log.d("s","berubah");
 
@@ -122,20 +129,4 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        if (drawerToggle.onOptionsItemSelected(item))
-            return true;
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
 }

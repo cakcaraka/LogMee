@@ -1,11 +1,13 @@
 package com.kawung2011.labs.logmee;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 
 import java.util.List;
 
@@ -23,9 +26,12 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
 
     private List<Activities> actList;
     private Context ctx;
-    public ActAdapter(List<Activities> contactList,Context ctx) {
+    private Context _activityContext;
+
+    public ActAdapter(List<Activities> contactList,Context ctx, Context activityContext) {
         this.actList = contactList;
         this.ctx = ctx;
+        this._activityContext = activityContext;
     }
 
     @Override
@@ -35,11 +41,11 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
 
     @Override
     public void onBindViewHolder(ActViewHolder actViewHolder, int i) {
-        final Activities ci = actList.get(i);
-        actViewHolder.vName.setText(ci.get_name());
-        actViewHolder.vDate.setText(ci.get_dateTime());
+        final Activities activity = actList.get(i);
+        actViewHolder.vName.setText(activity.get_name());
+        actViewHolder.vDate.setText(activity.get_dateTime());
         actViewHolder.vDescription.setText("Lorem Ipsum");
-        Bitmap bm = ci.getBitmap();
+        Bitmap bm = activity.getBitmap();
         if(bm != null){
             actViewHolder.vImage.setImageBitmap(bm);
         }
@@ -48,13 +54,47 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(ctx, ActViewActivity.class);
-                Log.d("d", ii + ""+ci.get_id());
-                intent.putExtra("_id", ci.get_id());
+                Log.d("d", ii + "" + activity.get_id());
+                intent.putExtra("_id", activity.get_id());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 ctx.startActivity(intent);
             }
         });
 
+        actViewHolder.vView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                final CharSequence[] options = { "Update", "Delete", "Cancel" };
+                AlertDialog.Builder builder = new AlertDialog.Builder(_activityContext);
+                builder.setTitle("Action!");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Update"))
+                        {
+                            Intent intent = new Intent(_activityContext, ActCreateActivity.class);
+                            intent.putExtra("_id", activity.get_id());
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            ctx.startActivity(intent);
+                        }
+                        else if (options[item].equals("Delete"))
+                        {
+                            DBHandler db = new DBHandler(_activityContext, null);
+                            db.deleteActivity(activity);
+                            Intent intent = new Intent(_activityContext, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            ctx.startActivity(intent);
+
+                        }
+                        else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+            }
+        });
     }
 
     @Override
