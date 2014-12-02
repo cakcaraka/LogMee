@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="208dp" android:layout_height="match_parent"
+    android:background="#ffffffff">
+
+    <LinearLayout
+        android:paddingTop="10dp"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp">
+
+            <ImageView
+                android:src="@drawable/ic_action_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView2"
+                android:maxWidth="72dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Settings"
+                android:id="@+id/textView4"
+                android:layout_gravity="right"
+                android:textColor="#000000"
+                android:textSize="15dp"
+                android:autoText="false"
+                android:elegantTextHeight="false"
+                android:paddingTop="16dp"
+                android:paddingLeft="22dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp">
+
+            <ImageView
+                android:src="@drawable/ic_action_help"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView3"
+                android:maxWidth="72dp"
+                android:focusableInTouchMode="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Help &amp; Feedback"
+                android:id="@+id/textView5"
+                android:layout_gravity="right"
+                android:textColor="#ff000000"
+                android:textSize="15dp"
+                android:autoText="false"
+                android:elegantTextHeight="false"
+                android:paddingTop="16dp"
+                android:paddingLeft="22dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp">
+
+            <ImageView
+                android:src="@drawable/ic_action_about"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView4"
+                android:maxWidth="72dp"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Settings"
+                android:id="@+id/textView6"
+                android:layout_gravity="right"
+                android:textColor="#000000"
+                android:textSize="15dp"
+                android:autoText="false"
+                android:elegantTextHeight="false"
+                android:paddingTop="16dp"
+                android:paddingLeft="22dp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

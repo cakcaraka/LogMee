@@ -1,5 +1,14 @@
 package com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by numan on 20/11/2014.
  */
@@ -13,8 +22,22 @@ public class Activities {
     private int _count_logs_image;
     private int _count_logs_speech;
 
-    public Activities() {
+    public Activities(){
 
+    }
+
+    public Activities(String name, Bitmap image) {
+        String encodedImageString = "";
+        if(image != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] b = baos.toByteArray();
+            encodedImageString = Base64.encodeToString(b, Base64.DEFAULT);
+        }
+        this._name = name;
+        this._status = "0";
+        this._image = encodedImageString;
+        this._dateTime = new Timestamp(new Date().getTime()).toString();
     }
 
     public Activities(String name, String status, String image, String dateTime) {
@@ -92,7 +115,13 @@ public class Activities {
     }
 
     public String get_dateTime() {
-        return _dateTime;
+        try {
+            Date dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(_dateTime);
+            return new SimpleDateFormat("c,d MMMM y hh:mm").format(dateFormat);
+
+        }catch(Exception e){
+            return _dateTime;
+        }
     }
 
     public void set_dateTime(String _dateTime) {
@@ -102,5 +131,15 @@ public class Activities {
     @Override
     public String toString(){
         return this.get_id() + "," + this.get_name() + "," + this.get_status() + "," + this.get_image() + "," + this.get_dateTime();
+    }
+
+    public Bitmap getBitmap(){
+        if(_image.equals("")){
+            return null;
+        }
+        byte[] bytarray = Base64.decode(_image, Base64.DEFAULT);
+        Bitmap bmimage = BitmapFactory.decodeByteArray(bytarray, 0,
+                bytarray.length);
+        return bmimage;
     }
 }

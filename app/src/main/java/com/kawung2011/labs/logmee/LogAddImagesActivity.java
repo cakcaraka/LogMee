@@ -138,5 +138,4 @@ public class LogAddImagesActivity extends Activity {
             }
         }
     }
-
 }

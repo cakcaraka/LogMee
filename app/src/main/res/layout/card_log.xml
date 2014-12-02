@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="8dp"
+            android:paddingTop="5dp">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_height="fill_parent"
+                android:id="@+id/linear1"
+                android:paddingLeft="8dp"
+                android:paddingTop="5dp">
+            </LinearLayout>
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="0.005"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.7"
+                android:layout_height="fill_parent"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="WPAP Soekarno Hatta Versi Pertama"
+                    android:id="@+id/textTitle"
+                    android:textColor="#000000"
+                    android:singleLine="true"
+                    android:layout_marginLeft="6dp"
+
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""
+                    android:id="@+id/textDate"
+                    android:textColor="@android:color/darker_gray"
+                    android:singleLine="true"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginBottom="6dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

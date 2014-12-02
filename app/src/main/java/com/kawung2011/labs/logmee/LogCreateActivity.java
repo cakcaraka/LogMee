@@ -2,12 +2,25 @@ package com.kawung2011.labs.logmee;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,30 +28,59 @@ import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activitie
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 
-public class LogCreateActivity extends Activity {
-
+public class LogCreateActivity extends ActionBarActivity {
+    private Toolbar toolbar;
+    private int id;
+    private int REQ_SOUND = 0;
+    private int REQ_CAM = 1;
+    private int REQ_GAL = 2;
+    private LinearLayout mediaLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_create_activity);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mediaLayout = (LinearLayout) findViewById(R.id.mediaLayout);
+        Intent intent = getIntent();
+        id = intent.getIntExtra("_id",0);
 
-        Button button = (Button) findViewById(R.id.btnAddImages);
+        if (toolbar != null) {
+            toolbar.setTitle("Create Log" + id);
+            setSupportActionBar(toolbar);
+        }
+
+        ImageButton button = (ImageButton) findViewById(R.id.btnAddImagesGallery);
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                Intent i = new Intent(LogCreateActivity.this, LogAddImagesActivity.class);
-
-                startActivity(i);
+                Intent intent = new   Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, REQ_GAL);
+            }
+        });
+        ImageButton button3 = (ImageButton) findViewById(R.id.btnAddImagesCam);
+        button3.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+                startActivityForResult(intent, REQ_CAM);
             }
         });
 
-        Button button2 = (Button) findViewById(R.id.btnAddSound);
+        ImageButton button2 = (ImageButton) findViewById(R.id.btnAddSound);
         button2.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -47,7 +89,7 @@ public class LogCreateActivity extends Activity {
                 Intent i = new Intent(LogCreateActivity.this, LogAddAudioActivity.class);
                 //Intent i = new Intent(ctx, TestAudioRecord.class);
 
-                startActivity(i);
+                startActivityForResult(i, REQ_SOUND);
             }
         });
     }
@@ -79,16 +121,81 @@ public class LogCreateActivity extends Activity {
     }
 
     private void createLog() {
-        EditText et = (EditText) findViewById(R.id.editText_log_text);
-        Intent intent = getIntent();
-        int id = Integer.parseInt(intent.getStringExtra("_id"));
-
+        EditText et = (EditText) findViewById(R.id.editText_log_title);
         if(et.getText().toString().equals("")){
             Toast.makeText(getApplicationContext(), "Text can't be empty", Toast.LENGTH_SHORT).show();
         }else{
             DBHandler db = new DBHandler(this, null);
-            db.addLogs(new Logs(id, et.getText().toString(), "", "", "", "", "", ""));
+            db.addLogs(new Logs(id, et.getText().toString()));
+            finish();
             Toast.makeText(getApplicationContext(),et.getText(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            ImageView viewImage = new ImageView(this);
+            if (requestCode == REQ_CAM) {
+                File f = new File(Environment.getExternalStorageDirectory().toString());
+                for (File temp : f.listFiles()) {
+                    if (temp.getName().equals("temp.jpg")) {
+                        f = temp;
+                        break;
+                    }
+                }
+                try {
+                    Bitmap bitmap;
+                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+
+                    bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),
+                            bitmapOptions);
+
+                    viewImage.setImageBitmap(bitmap);
+                    mediaLayout.removeAllViewsInLayout();
+                    mediaLayout.addView(viewImage);
+                    String path = android.os.Environment
+                            .getExternalStorageDirectory()
+                            + File.separator
+                            + "Logmee" + File.separator + "activity";
+                    OutputStream outFile = null;
+                    new File(path).mkdirs();
+                    File file = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
+                    try {
+                        outFile = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
+                        outFile.flush();
+                        outFile.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (requestCode == REQ_GAL) {
+
+                Uri selectedImage = data.getData();
+                String[] filePath = {MediaStore.Images.Media.DATA};
+                Cursor c = getContentResolver().query(selectedImage, filePath, null, null, null);
+                c.moveToFirst();
+                int columnIndex = c.getColumnIndex(filePath[0]);
+                String picturePath = c.getString(columnIndex);
+                c.close();
+
+                Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+                viewImage.setImageBitmap(thumbnail);
+                mediaLayout.removeAllViewsInLayout();
+                mediaLayout.addView(viewImage);
+            } else if (requestCode == REQ_SOUND) {
+                byte[] sound = data.getByteArrayExtra("sound");
+                mediaLayout.removeAllViewsInLayout();
+                //mediaLayout.addView(viewImage);
+                // do something with B's return values
+            }
         }
     }
 }

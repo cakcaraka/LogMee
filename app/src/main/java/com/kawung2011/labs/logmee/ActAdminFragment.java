@@ -83,8 +83,8 @@ public class ActAdminFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
+       // ((MainActivity) activity).onSectionAttached(
+       //         getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     @Override
@@ -98,7 +98,7 @@ public class ActAdminFragment extends Fragment {
     }
 
     private void displayListView(final View rootView) {
-            DBHandler db = new DBHandler(this.getActivity(),null);
+/*            DBHandler db = new DBHandler(this.getActivity(),null);
             Cursor cursor = db.fetchAllActivitiesInMain();
             // The desired columns to be bound
             String[] columns = new String[] {

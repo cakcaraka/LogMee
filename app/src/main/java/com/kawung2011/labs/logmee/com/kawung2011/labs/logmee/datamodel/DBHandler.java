@@ -50,7 +50,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String sql = "create table " + TABLE_ACTIVITIES + " (" + A_ID + " integer primary key  AUTOINCREMENT NOT NULL, " +
                 A_NAME + " text, " +
                 A_STATUS + " integer, " +
-                A_IMG + " text, " +
+                A_IMG + " blob, " +
                 A_DATE_TIME + " text, " +
                 A_COUNT_TEXT + " integer, " +
                 A_COUNT_IMAGE + " integer, " +
@@ -67,13 +67,13 @@ public class DBHandler extends SQLiteOpenHelper {
                 L_LOCATION_LATITUDE + " text, " +
                 L_DATE_TIME + " text)";
         db.execSQL(sql);
-        insertSomeData(db);
+        //insertSomeData(db);
     }
 
     private void insertSomeData(SQLiteDatabase db) {
-        db.execSQL("insert into activities values(0, \"Tekmob\", 0, \"image Tekmob\", \"24/11/2014\", 0, 0, 0);");
-        db.execSQL("insert into activities values(1, \"PMPL\", 0, \"image pmpl\", \"24/11/2014\", 0, 0, 0);");
-        db.execSQL("insert into activities values(2, \"Sister\", 1, \"image sister\", \"24/11/2014\", 0, 0, 0);");
+        db.execSQL("insert into activities values(1, \"Tekmob\", 0, \"\", \"24/11/2014\", 0, 0, 0);");
+        db.execSQL("insert into activities values(2, \"PMPL\", 0, \"\", \"24/11/2014\", 0, 0, 0);");
+        db.execSQL("insert into activities values(3, \"Sister\", 1, \"\", \"24/11/2014\", 0, 0, 0);");
         db.execSQL("insert into logs values(0, 0, \"Brainstorming ide\", \"image brainstorming\", \"speech brainstorming\", \"kantin\", \"-1.4\" , \"1.5\", \"24/11/2014\");");
         db.execSQL("insert into logs values(1, 0, null, \"image sketch\", null, \"kantin\", \"-1.4\" , \"1.5\", \"24/11/2014\");");
         db.execSQL("insert into logs values(2, 0, null, \"image mock up\", null, \"perpustakaan\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
@@ -92,7 +92,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /* Activities Qeury */
 
-    public void addActivities(Activities activity) {
+    public int addActivities(Activities activity) {
         ContentValues values = new ContentValues();
         values.put(A_NAME, activity.get_name());
         values.put(A_STATUS, activity.get_status());
@@ -100,8 +100,9 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(A_DATE_TIME, activity.get_dateTime());
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABLE_ACTIVITIES, null, values);
+        long id = db.insert(TABLE_ACTIVITIES, null, values);
         db.close();
+        return Integer.parseInt(""+id);
     }
 
     public void updateActivity(Activities activity) {
@@ -125,35 +126,44 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Cursor fetchAllActivitiesInMain() {
+    public List<Activities> fetchAllActivities(){
+        return fetchAllActivities(2);
+    }
+    public List<Activities> fetchAllActivities(int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "select * from activities";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
+        if(status == 0){
+            selectQuery += " where "+A_STATUS+" = 0";
+        }else if(status == 1){
+            selectQuery += " where "+A_STATUS+" = 1";
         }
-        return cursor;
+        selectQuery += " order by "+A_ID+" desc";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        List<Activities> acts = new ArrayList<Activities>();
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            while (true) {
+
+                Activities activity = new Activities();
+                activity.set_id(Integer.parseInt(cursor.getString(0)));
+                activity.set_name(cursor.getString(1));
+                activity.set_status(cursor.getString(2));
+                activity.set_image(cursor.getString(3));
+                activity.set_dateTime(cursor.getString(4));
+                acts.add(activity);
+                if(cursor.isLast()){
+                    break;
+                }else {
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+            db.close();
+        }
+        return acts;
     }
 
-    public Cursor fetchAllUncompleteActivities() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "select * from activities where status = 0";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        return cursor;
-    }
 
-    public Cursor fetchAllCompleteActivities() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "select * from activities where status = 1";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        return cursor;
-    }
 
     public Activities findActivity(int activityId) {
         String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_ID + " = " + activityId;
@@ -175,24 +185,31 @@ public class DBHandler extends SQLiteOpenHelper {
         return activity;
     }
 
-    public Activities findActivityByName(String activityName) {
-        String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_NAME + " = \"" + activityName +"\"";
+    public List<Activities> findActivityByName(String activityName) {
+        String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_NAME + " like \"%" + activityName +"%\"";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        Activities activity = new Activities();
-        if (cursor.moveToFirst()) {
+        List<Activities> acts = new ArrayList<Activities>();
+        if (cursor != null) {
             cursor.moveToFirst();
-            activity.set_id(Integer.parseInt(cursor.getString(0)));
-            activity.set_name(cursor.getString(1));
-            activity.set_status(cursor.getString(2));
-            activity.set_image(cursor.getString(3));
-            activity.set_dateTime(cursor.getString(4));
+            while (true) {
+                Activities activity = new Activities();
+                activity.set_id(Integer.parseInt(cursor.getString(0)));
+                activity.set_name(cursor.getString(1));
+                activity.set_status(cursor.getString(2));
+                activity.set_image(cursor.getString(3));
+                activity.set_dateTime(cursor.getString(4));
+                acts.add(activity);
+                if(cursor.isLast()){
+                    break;
+                }else {
+                    cursor.moveToNext();
+                }
+            }
             cursor.close();
-        } else {
-            activity = null;
+            db.close();
         }
-        db.close();
-        return activity;
+        return acts;
     }
 
     /* Log Query */
@@ -304,14 +321,36 @@ public class DBHandler extends SQLiteOpenHelper {
         return log;
     }
 
-    public Cursor fetchAllLogsById(int id) {
+    public List<Logs> fetchAllLogsById(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "select * from logs where activity = " +id+";";
         Cursor cursor = db.rawQuery(selectQuery, null);
-        if (cursor != null) {
+        List<Logs> logs = new ArrayList<Logs>();
+        if (cursor != null && cursor.moveToFirst()) {
             cursor.moveToFirst();
+            while (true) {
+
+                Logs log = new Logs();
+                log.set_id(Integer.parseInt(cursor.getString(0)));
+                log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
+                log.set_text(cursor.getString(2));
+                log.set_image(cursor.getString(3));
+                log.set_speech(cursor.getString(4));
+                log.set_location(cursor.getString(5));
+                log.set_longitude(cursor.getString(6));
+                log.set_latitude(cursor.getString(7));
+                log.set_dateTime(cursor.getString(8));
+                logs.add(log);
+                if(cursor.isLast()){
+                    break;
+                }else {
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+            db.close();
         }
-        return cursor;
+        return logs;
     }
 
     public static String getTag() {

@@ -1,5 +1,9 @@
 package com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by numan on 20/11/2014.
  */
@@ -17,7 +21,9 @@ public class Logs {
     public Logs() {
 
     }
-
+    public Logs(int _activiy_id,String text){
+        this(_activiy_id,text,"","","","","",new Timestamp(new Date().getTime()).toString());
+    }
     public Logs(int _activiy_id, String _text, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
         this._activiy_id = _activiy_id;
         this._text = _text;
@@ -86,7 +92,13 @@ public class Logs {
     }
 
     public String get_dateTime() {
-        return _dateTime;
+        try {
+            Date dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(_dateTime);
+            return new SimpleDateFormat("c,d MMMM y hh:mm").format(dateFormat);
+
+        }catch(Exception e){
+            return _dateTime;
+        }
     }
 
     public void set_dateTime(String _dateTime) {

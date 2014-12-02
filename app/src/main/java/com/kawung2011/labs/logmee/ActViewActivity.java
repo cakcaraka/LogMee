@@ -1,9 +1,16 @@
 package com.kawung2011.labs.logmee;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,24 +21,35 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 
 import java.util.List;
 
 
-public class ActViewActivity extends Activity {
-
+public class ActViewActivity extends ActionBarActivity {
+    private Toolbar toolbar;
+    private Activities act;
+    private RecyclerView recList;
+    private int id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_view_activity);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        DBHandler db = new DBHandler(this,null);
 
         Intent intent = getIntent();
-        final String id = intent.getStringExtra("_id");
-        displayListViewLogs(Integer.parseInt((id)));
+        id = intent.getIntExtra("_id",0);
+        act = db.findActivity(id);
 
+        if (toolbar != null) {
+            toolbar.setTitle(act.get_name());
+            setSupportActionBar(toolbar);
+        }
+
+        final int ii = id;
         Button button = (Button) findViewById(R.id.btnAddLog);
         button.setOnClickListener(new View.OnClickListener()
         {
@@ -39,115 +57,33 @@ public class ActViewActivity extends Activity {
             public void onClick(View v)
             {
                 Intent i = new Intent(ActViewActivity.this, LogCreateActivity.class);
-                i.putExtra("_id", id);
+                Log.d("d", ""+ii);
+                i.putExtra("_id", ii);
                 startActivity(i);
             }
         });
 
-        /*
-        DBHandler db = new DBHandler(this, null);
-        List<Logs> list = db.getAllLogs();
-        String logs = "";
-        for(int i=0; i < list.size(); i++) {
-         logs += list.get(i).toString() +"\n";
-        }
-        if(logs.equals("")) logs = "belum ada log";
+        recList = (RecyclerView) findViewById(R.id.logsCardList);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
 
-        TextView text = (TextView) findViewById(R.id.logs);
-        text.setText(logs);
-        */
+        List<Logs> logs = db.fetchAllLogsById(id);
+
+        LogAdapter actAdapter = new LogAdapter(logs,getApplicationContext());
+        recList.setAdapter(actAdapter);
 
     }
-
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v.getId() == R.id.listViewLogs) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            menu.setHeaderTitle("judul menu");
-            menu.add(Menu.NONE, 0, 0, "update");
-            menu.add(Menu.NONE, 1, 1, "delete");
+    protected void onResume() {
+        super.onResume();
+        if(recList != null){
+            DBHandler db = new DBHandler(this,null);
+            List<Logs> logs = db.fetchAllLogsById(id);
+            LogAdapter actAdapter = new LogAdapter(logs,getApplicationContext());
+            recList.setAdapter(actAdapter);
+
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_act_view, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void displayListViewLogs(int id) {
-        DBHandler db = new DBHandler(this, null);
-        Cursor cursor = db.fetchAllLogsById(id);
-
-        // The desired columns to be bound
-        String[] columns = new String[] {
-                DBHandler.getlId(),
-                DBHandler.getlActivity(),
-                DBHandler.getlText(),
-                DBHandler.getlImg(),
-                DBHandler.getlSpeech(),
-                DBHandler.getlLocation(),
-                DBHandler.getlLocationLatitude(),
-                DBHandler.getlLocationLongitude(),
-                DBHandler.getaDateTime()
-        };
-
-        // the XML defined views which the data will be bound to
-        int[] to = new int[] {
-                R.id.textViewLogId,
-                R.id.textViewLogActivity,
-                R.id.textViewLogText,
-                R.id.textViewLogImage,
-                R.id.textViewLogSpeech,
-                R.id.textViewLogLocation,
-                R.id.textViewLogLatitude,
-                R.id.textViewLogLatitude,
-                R.id.textViewLogDateTime
-        };
-
-        // create the adapter using the cursor pointing to the desired data
-        //as well as the layout information
-        SimpleCursorAdapter dataAdapter = new SimpleCursorAdapter(
-                this, R.layout.log_info,
-                cursor,
-                columns,
-                to,
-                0);
-        ListView listView = (ListView) findViewById(R.id.listViewLogs);
-        // Assign adapter to ListView
-        listView.setAdapter(dataAdapter);
-
-        /*
-        final View onClickView = rootView;
-        Activity ctx = getActivity();
-        final Intent intent = new Intent(ctx, ActViewActivity.class);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> listView, View view, int position, long id) {
-                // Get the cursor, positioned to the corresponding row in the result set
-                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
-                // Get the state's capital from this row in the database.
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("_id"));
-                intent.putExtra("key", name);
-                startActivity(intent);
-            }
-        });
-        */
-}
 }

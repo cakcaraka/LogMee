@@ -1,11 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.kawung2011.labs.logmee.ActViewActivity">
+    android:layout_height="match_parent"
+    tools:context="com.kawung2011.labs.logmee.ActViewActivity"
+    android:orientation="vertical"
+    android:background="@color/background">
 
+    <include layout="@layout/toolbar" />
 
     <Button
         android:layout_width="wrap_content"
@@ -13,14 +13,10 @@
         android:text="Add Log"
         android:id="@+id/btnAddLog"
         android:layout_gravity="left|top" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/logsCardList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listViewLogs"
-        android:layout_below="@+id/btnAddLog"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-
-</RelativeLayout>
+</LinearLayout>

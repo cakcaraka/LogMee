@@ -21,8 +21,7 @@
         </activity>
         <activity
             android:name="com.kawung2011.labs.logmee.SplashActivity"
-            android:label="@string/title_activity_splash"
-            android:screenOrientation="portrait"
+            android:label="LogMee"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,23 +31,23 @@
         </activity>
         <activity
             android:name="com.kawung2011.labs.logmee.ActCreateActivity"
-            android:label="@string/title_activity_act_create" >
+            android:label="hehe" >
         </activity>
         <activity
             android:name="com.kawung2011.labs.logmee.LogAddImagesActivity"
-            android:label="@string/title_activity_test_camera" >
+            android:label="hehe" >
         </activity>
         <activity
             android:name="com.kawung2011.labs.logmee.LogAddAudioActivity"
-            android:label="@string/title_activity_audio_record_test" >
+            android:label="hhe" >
         </activity>
         <activity
             android:name="com.kawung2011.labs.logmee.ActViewActivity"
-            android:label="@string/title_activity_act_view" >
+            android:label="hihi" >
         </activity>
         <activity
             android:name=".LogCreateActivity"
-            android:label="@string/title_activity_log_view" >
+            android:label="hoho" >
         </activity>
     </application>
 
