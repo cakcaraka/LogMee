@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
@@ -39,7 +40,14 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
         final Logs ci = logList.get(i);
         actViewHolder.vName.setText(ci.get_text());
         actViewHolder.vDate.setText(ci.get_dateTime());
-
+        Bitmap bm = ci.get_image_bitmap();
+        if(bm != null){
+            ImageView iv = new ImageView(ctx);
+            iv.setImageBitmap(bm);
+            actViewHolder.vLayout.addView(iv);
+        }else{
+            Log.d("d",ci.get_text() + " " + ci.get_image());
+        }
     }
 
     @Override
@@ -53,13 +61,13 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
     public static class LogViewHolder extends RecyclerView.ViewHolder  {
         protected TextView vName;
         protected TextView vDate;
-
+        protected LinearLayout vLayout;
         protected View vView;
         public LogViewHolder(View v) {
             super(v);
             vName =  (TextView) v.findViewById(R.id.textTitle);
             vDate =  (TextView) v.findViewById(R.id.textDate);
-
+            vLayout = (LinearLayout) v.findViewById(R.id.log_content);
             vView =v;
         }
     }

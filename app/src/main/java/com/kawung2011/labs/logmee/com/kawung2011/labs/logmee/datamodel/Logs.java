@@ -1,5 +1,10 @@
 package com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,13 +65,38 @@ public class Logs {
     }
 
     public String get_image() {
+
         return _image;
+    }
+
+    public Bitmap get_image_bitmap(){
+        if(_image.equals("")){
+            return null;
+        }
+        byte[] bytarray = Base64.decode(_image, Base64.DEFAULT);
+        Bitmap bmimage = BitmapFactory.decodeByteArray(bytarray, 0,
+                bytarray.length);
+        return bmimage;
     }
 
     public void set_image(String _image) {
         this._image = _image;
     }
 
+    public void set_image(Bitmap _image){
+        String encodedImageString = "";
+        if(_image != null) {
+            int targetWidth = 600;
+            int targetHeight = (int) (_image.getHeight() * targetWidth / (double) _image.getWidth());
+            Bitmap bmp = Bitmap.createScaledBitmap(_image,targetWidth,targetHeight,true);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] b = baos.toByteArray();
+            encodedImageString = Base64.encodeToString(b, Base64.DEFAULT);
+        }
+        this._image = encodedImageString;
+    }
     public String get_speech() {
         return _speech;
     }

@@ -153,6 +153,7 @@ public class ActCreateActivity extends ActionBarActivity {
                 c.close();
 
                 Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+
                 Bitmap res = Bitmap.createScaledBitmap(thumbnail, 300, 300, true);
                 viewImage.setImageBitmap(res);
             }

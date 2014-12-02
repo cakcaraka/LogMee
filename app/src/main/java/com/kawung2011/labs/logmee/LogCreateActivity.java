@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,6 +44,9 @@ public class LogCreateActivity extends ActionBarActivity {
     private int REQ_CAM = 1;
     private int REQ_GAL = 2;
     private LinearLayout mediaLayout;
+    private ImageView viewImage;
+    private int type = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +130,19 @@ public class LogCreateActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(), "Text can't be empty", Toast.LENGTH_SHORT).show();
         }else{
             DBHandler db = new DBHandler(this, null);
-            db.addLogs(new Logs(id, et.getText().toString()));
+            Logs log = new Logs(id,et.getText().toString());
+            if(type == REQ_CAM || type == REQ_GAL){
+                Bitmap bmp;
+                try {
+                     bmp = ((BitmapDrawable) viewImage.getDrawable()).getBitmap();
+
+                }catch(Exception e){
+                    bmp = null;
+                }
+                log.set_image(bmp);
+            }
+            Log.d("d",log.toString());
+            db.addLogs(log);
             finish();
             Toast.makeText(getApplicationContext(),et.getText(),Toast.LENGTH_SHORT).show();
         }
@@ -135,7 +151,8 @@ public class LogCreateActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            ImageView viewImage = new ImageView(this);
+            type = requestCode;
+            viewImage = new ImageView(this);
             if (requestCode == REQ_CAM) {
                 File f = new File(Environment.getExternalStorageDirectory().toString());
                 for (File temp : f.listFiles()) {
@@ -152,7 +169,7 @@ public class LogCreateActivity extends ActionBarActivity {
                             bitmapOptions);
 
                     viewImage.setImageBitmap(bitmap);
-                    mediaLayout.removeAllViewsInLayout();
+                    mediaLayout.removeAllViews();
                     mediaLayout.addView(viewImage);
                     String path = android.os.Environment
                             .getExternalStorageDirectory()
@@ -188,14 +205,16 @@ public class LogCreateActivity extends ActionBarActivity {
 
                 Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
                 viewImage.setImageBitmap(thumbnail);
-                mediaLayout.removeAllViewsInLayout();
+                mediaLayout.removeAllViews();
                 mediaLayout.addView(viewImage);
             } else if (requestCode == REQ_SOUND) {
                 byte[] sound = data.getByteArrayExtra("sound");
-                mediaLayout.removeAllViewsInLayout();
+                mediaLayout.removeAllViews();
+                Log.d("s","asd");
                 //mediaLayout.addView(viewImage);
                 // do something with B's return values
             }
+            Log.d("s",""+requestCode);
         }
     }
 }

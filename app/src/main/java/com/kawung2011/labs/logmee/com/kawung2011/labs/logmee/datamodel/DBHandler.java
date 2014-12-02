@@ -60,7 +60,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sql = "create table " + TABLE_LOGS + " (" + L_ID + " integer primary key  AUTOINCREMENT NOT NULL, " +
                 L_ACTIVITY + " integer, " +
                 L_TEXT + " text, " +
-                L_IMG + " text, " +
+                L_IMG + " blob, " +
                 L_SPEECH + " text, " +
                 L_LOCATION + " text, " +
                 L_LOCATION_LONGITUDE + " text, " +
@@ -69,6 +69,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(sql);
         //insertSomeData(db);
     }
+
 
     private void insertSomeData(SQLiteDatabase db) {
         db.execSQL("insert into activities values(1, \"Tekmob\", 0, \"\", \"24/11/2014\", 0, 0, 0);");
