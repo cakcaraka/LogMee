@@ -114,6 +114,17 @@ public class Activities {
         this._image = _image;
     }
 
+    public void set_image(Bitmap image) {
+        String encodedImageString = "";
+        if(image != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] b = baos.toByteArray();
+            encodedImageString = Base64.encodeToString(b, Base64.DEFAULT);
+        }
+        this._image = encodedImageString;
+    }
+
     public String get_dateTime() {
         try {
             Date dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(_dateTime);

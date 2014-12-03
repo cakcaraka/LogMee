@@ -46,8 +46,12 @@
             android:label="hihi" >
         </activity>
         <activity
-            android:name=".LogCreateActivity"
+            android:name="com.kawung2011.labs.logmee.LogCreateActivity"
             android:label="hoho" >
+        </activity>
+        <activity
+            android:name="com.kawung2011.labs.logmee.MainActivity2"
+            android:label="@string/title_activity_main_activity2" >
         </activity>
     </application>
 

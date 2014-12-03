@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     tools:context="com.kawung2011.labs.logmee.ActCreateActivity"
     android:orientation="vertical">
 
@@ -15,6 +16,7 @@
 
     <EditText
         android:layout_width="fill_parent"
+        android:textColor="@color/black"
         android:layout_height="wrap_content"
         android:id="@+id/editText_act_title"
         android:inputType="none" />

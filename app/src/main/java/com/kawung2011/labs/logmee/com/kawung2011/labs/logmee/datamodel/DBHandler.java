@@ -106,7 +106,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return Integer.parseInt(""+id);
     }
 
-    public void updateActivity(Activities activity) {
+    public int updateActivity(Activities activity) {
         ContentValues values = new ContentValues();
         values.put(A_NAME, activity.get_name());
         values.put(A_STATUS, activity.get_status());
@@ -117,7 +117,19 @@ public class DBHandler extends SQLiteOpenHelper {
         int id = activity.get_id();
         db.update(TABLE_ACTIVITIES, values, "_id ="+id, null );
         db.close();
+        return Integer.parseInt(""+id);
     }
+
+    public void updateActivity(SQLiteDatabase db, Activities activity) {
+        ContentValues values = new ContentValues();
+        values.put(A_NAME, activity.get_name());
+        values.put(A_STATUS, activity.get_status());
+        values.put(A_IMG, activity.get_image());
+        values.put(A_DATE_TIME, activity.get_dateTime());
+        int id = activity.get_id();
+        db.update(TABLE_ACTIVITIES, values, "_id ="+id, null );
+    }
+
 
     public void deleteActivity(Activities activity) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -186,6 +198,26 @@ public class DBHandler extends SQLiteOpenHelper {
         return activity;
     }
 
+
+
+    public Activities findActivity(SQLiteDatabase db, int activityId) {
+        String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_ID + " = " + activityId;
+        Cursor cursor = db.rawQuery(query, null);
+        Activities activity = new Activities();
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            activity.set_id(Integer.parseInt(cursor.getString(0)));
+            activity.set_name(cursor.getString(1));
+            activity.set_status(cursor.getString(2));
+            activity.set_image(cursor.getString(3));
+            activity.set_dateTime(cursor.getString(4));
+            cursor.close();
+        } else {
+            activity = null;
+        }
+        return activity;
+    }
+
     public List<Activities> findActivityByName(String activityName) {
         String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_NAME + " like \"%" + activityName +"%\"";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -216,9 +248,12 @@ public class DBHandler extends SQLiteOpenHelper {
     /* Log Query */
 
     public void addLogs(Logs log) {
+
         ContentValues values = new ContentValues();
         values.put(L_ACTIVITY, log.get_activiy_id());
-        Activities activity = findActivity(log.get_activiy_id());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Activities activity = findActivity(db, log.get_activiy_id());
 
         values.put(L_TEXT, log.get_text());
         if(log.get_text() != null) activity.set_count_logs_text(activity.get_count_logs_text()+1);
@@ -226,20 +261,20 @@ public class DBHandler extends SQLiteOpenHelper {
         if(log.get_image() != null) activity.set_count_logs_image(activity.get_count_logs_image()+1);
         values.put(L_SPEECH, log.get_speech());
         if(log.get_speech() != null) activity.set_count_logs_speech(activity.get_count_logs_speech()+1);
-        updateActivity(activity);
+        updateActivity(db, activity);
 
         values.put(L_LOCATION, log.get_location());
         values.put(L_LOCATION_LATITUDE, log.get_latitude());
         values.put(L_LOCATION_LONGITUDE, log.get_longitude());
         values.put(L_DATE_TIME, log.get_dateTime());
 
-        SQLiteDatabase db = this.getWritableDatabase();
+
         db.insert(TABLE_LOGS, null, values);
 
         db.close();
     }
 
-    public void updateLog(Logs log) {
+    public int updateLog(Logs log) {
         ContentValues values = new ContentValues();
         values.put(L_ACTIVITY, log.get_activiy_id());
         values.put(L_TEXT, log.get_text());
@@ -250,8 +285,9 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(L_LOCATION_LATITUDE, log.get_latitude());
         values.put(L_DATE_TIME, log.get_dateTime());
 
-        Activities activity = findActivity(log.get_activiy_id());
-        Logs oldLog = findLog(log.get_id());
+        SQLiteDatabase db = this.getWritableDatabase();
+        Activities activity = findActivity(db, log.get_activiy_id());
+        Logs oldLog = findLog(db, log.get_id());
         if(oldLog.get_text() == null && log.get_text() != null) {
             activity.set_count_logs_text(activity.get_count_logs_text()+1);
         } else if(oldLog.get_text() != null & log.get_text() == null){
@@ -268,29 +304,26 @@ public class DBHandler extends SQLiteOpenHelper {
         } else if(oldLog.get_speech() != null & log.get_speech() == null){
             activity.set_count_logs_speech(activity.get_count_logs_speech()-1);
         }
-        updateActivity(activity);
+        updateActivity(db, activity);
 
-
-
-
-        SQLiteDatabase db = this.getWritableDatabase();
         int id = log.get_id();
         db.update(TABLE_LOGS, values, "_id ="+id, null );
         db.close();
+        return id;
     }
 
     public void deleteLog(Logs log) {
         SQLiteDatabase db = this.getWritableDatabase();
         int id = log.get_id();
-        Activities activity = findActivity(log.get_activiy_id());
+        Activities activity = findActivity(db, log.get_activiy_id());
 
         if(log.get_text() != null) activity.set_count_logs_text(activity.get_count_logs_text()-1);
         if(log.get_image() != null) activity.set_count_logs_image(activity.get_count_logs_image()-1);
         if(log.get_speech() != null) activity.set_count_logs_speech(activity.get_count_logs_speech()-1);
-        updateActivity(activity);
+        updateActivity(db, activity);
 
         db.delete(TABLE_LOGS, "_id ="+id, null);
-        db.close();
+        //db.close();
     }
 
     public void deleteAllLogByActivity(int activityId) {
@@ -319,6 +352,28 @@ public class DBHandler extends SQLiteOpenHelper {
             log = null;
         }
         db.close();
+        return log;
+    }
+
+    public Logs findLog(SQLiteDatabase db, int logId) {
+        String query = "Select * FROM " + TABLE_LOGS + " WHERE " + L_ID + " = " + logId;
+        Cursor cursor = db.rawQuery(query, null);
+        Logs log = new Logs();
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            log.set_id(Integer.parseInt(cursor.getString(0)));
+            log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
+            log.set_text(cursor.getString(2));
+            log.set_image(cursor.getString(3));
+            log.set_speech(cursor.getString(4));
+            log.set_location(cursor.getString(5));
+            log.set_longitude(cursor.getString(6));
+            log.set_latitude(cursor.getString(7));
+            log.set_dateTime(cursor.getString(8));
+            cursor.close();
+        } else {
+            log = null;
+        }
         return log;
     }
 

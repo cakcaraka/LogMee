@@ -44,7 +44,7 @@ public class LogAddAudioActivity extends Activity
 
     public LogAddAudioActivity() {
         mFileName = Environment.getExternalStorageDirectory().toString() + File.separator + "Logmee" + File.separator ;
-        mFileName += "audiorecordtest.mp3";
+        mFileName += System.currentTimeMillis()+".mp3";
     }
 
     @Override
@@ -174,11 +174,20 @@ public class LogAddAudioActivity extends Activity
 
          */
         Intent i = new Intent();
-        byte[] bits = new byte[1];
-        i.putExtra("sound",bits);
+        i.putExtra("path",mFileName);
         setResult(RESULT_OK,i);
         finish();
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        File myFile = new File(mFileName);
+        if(myFile.exists())
+            myFile.delete();
+
+        super.onBackPressed();  // optional depending on your needs
     }
 
 }

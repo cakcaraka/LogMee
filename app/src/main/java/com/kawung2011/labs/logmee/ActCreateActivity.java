@@ -1,7 +1,5 @@
 package com.kawung2011.labs.logmee;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,12 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,12 +24,10 @@ import android.widget.Toast;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 
@@ -43,16 +35,29 @@ public class ActCreateActivity extends ActionBarActivity {
     private Toolbar toolbar;
     String title = "Create Activity";
     private ImageView viewImage;
+    private int act_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_create_activity);
 
+        DBHandler db = new DBHandler(this,null);
+        Intent intent = getIntent();
+        act_id = intent.getIntExtra("_id",-1);
+        if(act_id != -1) {
+            Activities act = db.findActivity(act_id);
+            EditText txt = (EditText) findViewById(R.id.editText_act_title);
+            txt.setText(act.get_name());
+        }
+
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setTitle(title);
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
         }
         Button button = (Button) findViewById(R.id.button_act_photo);
         button.setOnClickListener(new View.OnClickListener()
@@ -165,7 +170,7 @@ public class ActCreateActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.act_create_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_create, menu);
         return true;
     }
 
@@ -179,7 +184,7 @@ public class ActCreateActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }else if(id == R.id.action_create_act){
+        }else if(id == R.id.action_submit){
             createAct();
         }else if (id==android.R.id.home) {
             finish();
@@ -203,11 +208,24 @@ public class ActCreateActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(),"Title can't be empty",Toast.LENGTH_SHORT).show();
         }else{
             DBHandler db = new DBHandler(this, null);
-            int id = db.addActivities(new Activities(et.getText().toString(), bmp));
-            Intent intent = new Intent(getApplicationContext(), ActViewActivity.class);
-            intent.putExtra("_id", id);
-            startActivity(intent);
-            finish();
+            int id = 0;
+            if(act_id != -1) {
+                Activities act = db.findActivity(act_id);
+                act.set_name(et.getText().toString());
+                act.set_image(bmp);
+                id = db.updateActivity(act);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                id = db.addActivities(new Activities(et.getText().toString(), bmp));
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                //intent.putExtra("_id", id);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+
         }
     }
 }

@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item android:id="@+id/action_submit"
+        android:icon="@drawable/ic_action_accept"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:title="submit"  />
+</menu>

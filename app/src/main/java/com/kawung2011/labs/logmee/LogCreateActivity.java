@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
+import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 
@@ -39,13 +39,14 @@ import java.util.List;
 
 public class LogCreateActivity extends ActionBarActivity {
     private Toolbar toolbar;
-    private int id;
-    private int REQ_SOUND = 0;
+   private int REQ_SOUND = 0;
     private int REQ_CAM = 1;
     private int REQ_GAL = 2;
     private LinearLayout mediaLayout;
     private ImageView viewImage;
     private int type = -1;
+    private int log_id;
+    private int act_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +54,23 @@ public class LogCreateActivity extends ActionBarActivity {
         setContentView(R.layout.log_create_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mediaLayout = (LinearLayout) findViewById(R.id.mediaLayout);
+
+
+        DBHandler db = new DBHandler(this,null);
         Intent intent = getIntent();
-        id = intent.getIntExtra("_id",0);
+        log_id = intent.getIntExtra("log_id",-1);
+        act_id = intent.getIntExtra("_id", -1);
+        if(log_id != -1) {
+            Logs log = db.findLog(log_id);
+            EditText txt = (EditText) findViewById(R.id.editText_log_title);
+            txt.setText(log.get_text());
+        }
 
         if (toolbar != null) {
-            toolbar.setTitle("Create Log" + id);
+            toolbar.setTitle("Create Log");
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
         }
 
         ImageButton button = (ImageButton) findViewById(R.id.btnAddImagesGallery);
@@ -67,7 +79,7 @@ public class LogCreateActivity extends ActionBarActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent = new   Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent = new   Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQ_GAL);
             }
         });
@@ -78,7 +90,7 @@ public class LogCreateActivity extends ActionBarActivity {
             public void onClick(View v)
             {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                File f = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
                 startActivityForResult(intent, REQ_CAM);
             }
@@ -130,19 +142,30 @@ public class LogCreateActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(), "Text can't be empty", Toast.LENGTH_SHORT).show();
         }else{
             DBHandler db = new DBHandler(this, null);
-            Logs log = new Logs(id,et.getText().toString());
-            if(type == REQ_CAM || type == REQ_GAL){
-                Bitmap bmp;
-                try {
-                     bmp = ((BitmapDrawable) viewImage.getDrawable()).getBitmap();
+            if(log_id != -1) {
+                Logs log = db.findLog(log_id);
+                log.set_text(et.getText().toString());
+                db.updateLog(log);
+            } else {
+                Logs log = new Logs(act_id,et.getText().toString());
+                if(type == REQ_CAM || type == REQ_GAL){
+                    Bitmap bmp;
+                    try {
+                        bmp = ((BitmapDrawable) viewImage.getDrawable()).getBitmap();
 
-                }catch(Exception e){
-                    bmp = null;
+                    }catch(Exception e){
+                        bmp = null;
+                    }
+                    log.set_image(bmp);
+                }else if(type == REQ_SOUND){
+                    log.set_speech(viewImage.getTag().toString());
                 }
-                log.set_image(bmp);
+                Log.d("d",log.toString());
+                db.addLogs(log);
+
+
             }
-            Log.d("d",log.toString());
-            db.addLogs(log);
+
             finish();
             Toast.makeText(getApplicationContext(),et.getText(),Toast.LENGTH_SHORT).show();
         }
@@ -208,9 +231,10 @@ public class LogCreateActivity extends ActionBarActivity {
                 mediaLayout.removeAllViews();
                 mediaLayout.addView(viewImage);
             } else if (requestCode == REQ_SOUND) {
-                byte[] sound = data.getByteArrayExtra("sound");
+                String sound = data.getStringExtra("path");
+                viewImage.setTag(sound);
                 mediaLayout.removeAllViews();
-                Log.d("s","asd");
+                mediaLayout.addView(viewImage);
                 //mediaLayout.addView(viewImage);
                 // do something with B's return values
             }

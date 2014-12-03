@@ -10,43 +10,26 @@
 
     <include layout="@layout/toolbar" />
 
-
     <android.support.v4.widget.DrawerLayout
         android:layout_width="match_parent"
         android:id="@+id/drawerLayout"
+
         android:layout_height="match_parent">
         <!-- content -->
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:background="@color/background"
             android:layout_height="match_parent"
+            android:paddingTop="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingTop="8dp">
-                <ImageButton
-                    android:id="@+id/add_button"
-                    android:tint="@android:color/white"
-                    android:background="@drawable/circular_button"
-                    android:elevation="100dp"
-                    android:layout_width="@dimen/round_button_diameter"
-                    android:layout_height="@dimen/round_button_diameter"
-                    android:layout_gravity="bottom|right"
-                    android:layout_marginBottom="@dimen/add_button_margin"
-                    android:layout_marginEnd="@dimen/add_button_margin"
-                    android:src="@android:drawable/ic_input_add"
-                    android:cropToPadding="true"
-                    android:focusable="false"
-                    android:baselineAlignBottom="false" />
-
+            android:orientation="vertical"
+            android:background="#ddd">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/cardList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 />
         </LinearLayout>
-
-
         <!-- nav drawer -->
         <LinearLayout
             android:layout_gravity="start"
@@ -57,7 +40,7 @@
             android:paddingRight="16dp"
             android:layout_height="match_parent">
 
-        <include layout="@layout/navigation_bar"></include>
+            <include layout="@layout/navigation_bar"></include>
 
 
         </LinearLayout>

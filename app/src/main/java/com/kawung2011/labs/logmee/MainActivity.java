@@ -1,22 +1,26 @@
 package com.kawung2011.labs.logmee;
 
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.support.v4.widget.DrawerLayout;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
+import com.kawung2011.labs.logmee.lib.FloatingActionButton;
 
 import java.util.List;
 
@@ -44,8 +48,15 @@ public class MainActivity extends ActionBarActivity {
         }
         initDrawer();
 
-        ImageButton btn = (ImageButton) findViewById(R.id.add_button);
-        btn.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabButton = new FloatingActionButton.Builder(this)
+                .withDrawable(getResources().getDrawable(R.drawable.float_add))
+                .withButtonColor(Color.rgb(233, 30, 99))
+                .withGravity(Gravity.BOTTOM | Gravity.RIGHT)
+                .withButtonSize(64)
+                .withMargins(0, 16, 16, 0)
+                .create();
+
+        fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, ActCreateActivity.class);
@@ -63,12 +74,13 @@ public class MainActivity extends ActionBarActivity {
 
         ActAdapter actAdapter = new ActAdapter(acts,getApplicationContext());
         recList.setAdapter(actAdapter);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        
+
         if(recList != null){
             DBHandler db = new DBHandler(this,null);
             List<Activities> acts = db.fetchAllActivities();
@@ -102,6 +114,15 @@ public class MainActivity extends ActionBarActivity {
 
         // setDrawerlisterner
         drawerLayout.setDrawerListener(drawerToggle);
+
+        LinearLayout set = (LinearLayout) findViewById(R.id.drawerSettings);
+        set.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"abc",Toast.LENGTH_LONG).show();
+                drawerLayout.closeDrawers();
+            }
+        });
     }
 
     @Override
@@ -117,25 +138,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        Toast.makeText(getApplicationContext(),id,Toast.LENGTH_LONG).show();
+
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        if (drawerToggle.onOptionsItemSelected(item))
-            return true;
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
 }

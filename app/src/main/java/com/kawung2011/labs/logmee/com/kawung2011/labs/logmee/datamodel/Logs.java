@@ -3,8 +3,11 @@ package com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +30,7 @@ public class Logs {
 
     }
     public Logs(int _activiy_id,String text){
-        this(_activiy_id,text,"","","","","",new Timestamp(new Date().getTime()).toString());
+        this(_activiy_id,text,null,null,null,null,null,new Timestamp(new Date().getTime()).toString());
     }
     public Logs(int _activiy_id, String _text, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
         this._activiy_id = _activiy_id;
@@ -70,10 +73,10 @@ public class Logs {
     }
 
     public Bitmap get_image_bitmap(){
-        if(_image.equals("")){
+        if(this._image == null || this._image.equals("")){
             return null;
         }
-        byte[] bytarray = Base64.decode(_image, Base64.DEFAULT);
+        byte[] bytarray = Base64.decode(this._image, Base64.DEFAULT);
         Bitmap bmimage = BitmapFactory.decodeByteArray(bytarray, 0,
                 bytarray.length);
         return bmimage;
@@ -98,12 +101,14 @@ public class Logs {
         this._image = encodedImageString;
     }
     public String get_speech() {
+        if(_speech == null) return "";
         return _speech;
     }
 
-    public void set_speech(String _speech) {
-        this._speech = _speech;
+    public void set_speech(String _path) {
+        this._speech = _path;
     }
+
 
     public String get_location() {
         return _location;
