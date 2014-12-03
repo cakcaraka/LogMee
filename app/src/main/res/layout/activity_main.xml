@@ -23,12 +23,9 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:orientation="vertical"
+            android:id="@+id/container"
             android:background="#ddd">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/cardList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
+
         </LinearLayout>
         <!-- nav drawer -->
         <LinearLayout
