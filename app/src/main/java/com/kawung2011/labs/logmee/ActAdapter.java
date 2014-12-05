@@ -1,5 +1,6 @@
 package com.kawung2011.labs.logmee;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
@@ -25,11 +27,12 @@ import java.util.List;
 public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
 
     private List<Activities> actList;
+    private Activity act;
     private Context ctx;
-
-    public ActAdapter(List<Activities> contactList,Context ctx) {
+    public ActAdapter(List<Activities> contactList,Activity act) {
         this.actList = contactList;
-        this.ctx = ctx;
+        this.act = act;
+        this.ctx = act.getApplicationContext();
     }
 
     @Override
@@ -63,7 +66,7 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 final CharSequence[] options = { "Update", "Delete", "Cancel" };
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                AlertDialog.Builder builder = new AlertDialog.Builder(act);
                 builder.setTitle("Action!");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
@@ -91,6 +94,7 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
                     }
                 });
                 builder.show();
+
             }
         });
     }

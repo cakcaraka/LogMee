@@ -7,12 +7,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
@@ -57,6 +62,7 @@ public class ActAdminFragment extends Fragment {
         if(fabButton != null) {
             fabButton.setVisibility(View.INVISIBLE);
         }
+
     }
 
 
@@ -88,12 +94,46 @@ public class ActAdminFragment extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        DBHandler db = new DBHandler(getActivity().getApplicationContext(),null);
-        List<Activities> acts = db.fetchAllActivities();
+        updateList("");
 
-        ActAdapter actAdapter = new ActAdapter(acts,getActivity().getApplicationContext());
+        setHasOptionsMenu(true);
+        return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        SearchView sv = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        sv.setQueryHint("search..");
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
+            @Override
+            public boolean onQueryTextChange(String query) {
+                updateList(query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextSubmit(String query)
+            {
+                return true;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void updateList(String query)
+    {
+        DBHandler db = new DBHandler(getActivity().getApplicationContext(),null);
+
+        List<Activities> acts;
+        if(query.equals("")) {
+            acts =db.fetchAllActivities();
+        }else{
+            acts = db.findActivityByName(query);
+        }
+        ActAdapter actAdapter = new ActAdapter(acts,getActivity());
         recList.setAdapter(actAdapter);
 
-        return v;
     }
 }
