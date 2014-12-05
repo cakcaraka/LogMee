@@ -80,17 +80,21 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
             }
         });
 
-        if(actViewHolder.vLayout.getChildCount() == 2){
+            ImageView iv = (ImageView) actViewHolder.vView.findViewById(R.id.logImage);
+            final Button btn = (Button) actViewHolder.vView.findViewById(R.id.logSound);
+            iv.setVisibility(View.INVISIBLE);
+            btn.setVisibility(View.INVISIBLE);
             Bitmap bm = ci.get_image_bitmap();
             if(bm != null){
-                ImageView iv = new ImageView(ctx);
                 iv.setImageBitmap(bm);
-                actViewHolder.vLayout.addView(iv);
+                iv.setVisibility(View.VISIBLE);
+                actViewHolder.vImage.setImageResource(R.drawable.mark_picture);
             }else if(!ci.get_speech().equals("")){
-                final Button btn = new Button(ctx);
+                actViewHolder.vImage.setImageResource(R.drawable.mark_sound);
+
+                btn.setVisibility(View.VISIBLE);
                 btn.setTag(false);
                 btn.setText("Play");
-
                 final LogAudioPlayer pl = new LogAudioPlayer(ci.get_speech(),btn);
                 btn.setOnClickListener(new View.OnClickListener()
                 {
@@ -108,10 +112,9 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
                         }
                     }
                 });
-                actViewHolder.vLayout.addView(btn);
+            }else{
+                actViewHolder.vImage.setImageResource(R.drawable.mark_note);
             }
-        }
-
     }
 
     @Override
@@ -125,14 +128,16 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
     public static class LogViewHolder extends RecyclerView.ViewHolder  {
         protected TextView vName;
         protected TextView vDate;
-        protected LinearLayout vLayout;
         protected View vView;
+        protected LinearLayout vLayout;
+        protected ImageView vImage;
         public LogViewHolder(View v) {
             super(v);
             vName =  (TextView) v.findViewById(R.id.textTitle);
             vDate =  (TextView) v.findViewById(R.id.textDate);
-            vLayout = (LinearLayout) v.findViewById(R.id.log_content);
             vView =v;
+            vLayout = (LinearLayout) v.findViewById(R.id.logLayout);
+            vImage = (ImageView) v.findViewById(R.id.imageMark);
         }
 
 

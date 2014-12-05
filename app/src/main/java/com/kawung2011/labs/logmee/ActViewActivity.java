@@ -3,6 +3,7 @@ package com.kawung2011.labs.logmee;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,15 +14,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
+import com.kawung2011.labs.logmee.lib.FloatingActionButton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,15 +53,21 @@ public class ActViewActivity extends ActionBarActivity {
         act = db.findActivity(id);
 
         if (toolbar != null) {
-            toolbar.setTitle(act.get_name());
+            toolbar.setTitle("");
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+        FloatingActionButton fabButton = new FloatingActionButton.Builder(this)
+                .withDrawable(getResources().getDrawable(R.drawable.float_add))
+                .withButtonColor(Color.rgb(233, 30, 99))
+                .withGravity(Gravity.TOP | Gravity.LEFT)
+                .withButtonSize(64)
+                .withMargins(123, 0, 0, 8)
+                .create();
 
         final int ii = id;
-        Button button = (Button) findViewById(R.id.btnAddLog);
-        button.setOnClickListener(new View.OnClickListener() {
+        fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ActViewActivity.this, LogCreateActivity.class);
@@ -67,6 +77,9 @@ public class ActViewActivity extends ActionBarActivity {
                 startActivity(i);
             }
         });
+
+        ((TextView) findViewById(R.id.textActTitle)).setText(act.get_name());
+        ((TextView) findViewById(R.id.textActDate)).setText(act.get_dateTime());
 
         recList = (RecyclerView) findViewById(R.id.logsCardList);
         recList.setHasFixedSize(true);
