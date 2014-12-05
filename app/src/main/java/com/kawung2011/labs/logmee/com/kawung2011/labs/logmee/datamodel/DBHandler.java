@@ -67,7 +67,35 @@ public class DBHandler extends SQLiteOpenHelper {
                 L_LOCATION_LATITUDE + " text, " +
                 L_DATE_TIME + " text)";
         db.execSQL(sql);
-        //insertSomeData(db);
+
+        sql = "create table widgetData ( _id integer primary key AUTOINCREMENT NOT NULL, id_activity integer)";
+        db.execSQL(sql);
+        db.execSQL("insert into widgetData values(1, -1)");
+
+        insertSomeData(db);
+    }
+
+    public int findWidgetActivityId() {
+        String query = "Select * FROM widgetData where _id = 1";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        int activity_id = -1;
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            cursor.getString(0);
+            activity_id = Integer.parseInt(cursor.getString(1));
+            cursor.close();
+        }
+        db.close();
+        return activity_id;
+    }
+
+    public void updateWidgetActivityId(int activity_id) {
+        ContentValues values = new ContentValues();
+        values.put("id_activity", activity_id);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update("widgetData", values, "_id = 1", null );
+        db.close();
     }
 
 

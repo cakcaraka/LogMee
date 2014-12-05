@@ -65,7 +65,7 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
         actViewHolder.vView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                final CharSequence[] options = { "Update", "Delete", "Cancel" };
+                final CharSequence[] options = { "Update", "Delete", "Set to Widget Access","Cancel" };
                 AlertDialog.Builder builder = new AlertDialog.Builder(act);
                 builder.setTitle("Action!");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -86,7 +86,15 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             ctx.startActivity(intent);
-
+                        }
+                        else if(options[item].equals("Set to Widget Access"))
+                        {
+                            DBHandler db = new DBHandler(ctx, null);
+                            db.updateWidgetActivityId(activity.get_id());
+                            Intent intent = new Intent(ctx, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            ctx.startActivity(intent);
                         }
                         else if (options[item].equals("Cancel")) {
                             dialog.dismiss();
