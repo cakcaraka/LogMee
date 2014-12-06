@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kawung2011.labs.logmee" >
+    package="com.kawung2011.labs.logmee">
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -50,10 +51,6 @@
         <activity
             android:name="com.kawung2011.labs.logmee.LogCreateActivity"
             android:label="hoho" >
-        </activity>
-        <activity
-            android:name="com.kawung2011.labs.logmee.MainActivity2"
-            android:label="@string/title_activity_main_activity2" >
         </activity>
     </application>
 

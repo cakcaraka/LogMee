@@ -11,6 +11,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -40,14 +41,13 @@ public class ActViewActivity extends ActionBarActivity {
     private Activities act;
     private RecyclerView recList;
     private int id;
-
+    private DBHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_view_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        DBHandler db = new DBHandler(this, null);
-
+        db = new DBHandler(this,null);
         Intent intent = getIntent();
         id = intent.getIntExtra("_id", 0);
         act = db.findActivity(id);
@@ -86,8 +86,12 @@ public class ActViewActivity extends ActionBarActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
+        updateList("");
 
-        List<Logs> logs = db.fetchAllLogsById(id);
+    }
+
+    private void updateList(String query){
+        List<Logs> logs = db.fetchAllLogsById(id,query);
         LogAdapter actAdapter = new LogAdapter(logs, getApplicationContext(), ActViewActivity.this);
         recList.setAdapter(actAdapter);
         registerForContextMenu(recList);
@@ -176,28 +180,21 @@ public class ActViewActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_act_view, menu);
-
-        /*/MenuItem shareItem = menu.findItem(R.id.action_share);
-        ShareActionProvider myShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_TEXT, "Hello from android-er.blogspot.com");
-
-        myShareActionProvider.setShareIntent(intent);
-
-        /*shareItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+        SearchView sv = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        sv.setQueryHint("search..");
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                String shareBody = "Here is the share content body";
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, "Share via"));
-
+            public boolean onQueryTextChange(String query) {
+                updateList(query);
                 return true;
             }
-        });*/
-        return true;
+            @Override
+            public boolean onQueryTextSubmit(String query)
+            {
+                return true;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }

@@ -387,9 +387,16 @@ public class DBHandler extends SQLiteOpenHelper {
         return log;
     }
 
-    public List<Logs> fetchAllLogsById(int id) {
+    public List<Logs> fetchAllLogsById(int id){
+        return fetchAllLogsById(id,"");
+    }
+
+    public List<Logs> fetchAllLogsById(int id,String query) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "select * from logs where activity = " +id+";";
+        String selectQuery = "select * from logs where activity = " +id;
+        if(!query.equals("")){
+            selectQuery += " and "+ L_TEXT + " like \"%"+query+"%\"";
+        }
         Cursor cursor = db.rawQuery(selectQuery, null);
         List<Logs> logs = new ArrayList<Logs>();
         if (cursor != null && cursor.moveToFirst()) {

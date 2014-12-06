@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
+import com.kawung2011.labs.logmee.lib.LocationFinder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,15 +48,14 @@ public class LogCreateActivity extends ActionBarActivity {
     private int type = -1;
     private int log_id;
     private int act_id;
-
+    private LocationFinder  lf;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_create_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mediaLayout = (LinearLayout) findViewById(R.id.mediaLayout);
-
-
+        lf = new LocationFinder(getApplicationContext(),((TextView) findViewById(R.id.textLocation)));
         DBHandler db = new DBHandler(this,null);
         Intent intent = getIntent();
         log_id = intent.getIntExtra("log_id",-1);
@@ -103,11 +103,21 @@ public class LogCreateActivity extends ActionBarActivity {
             public void onClick(View v)
             {
                 Intent i = new Intent(LogCreateActivity.this, LogAddAudioActivity.class);
-                //Intent i = new Intent(ctx, TestAudioRecord.class);
-
                 startActivityForResult(i, REQ_SOUND);
             }
         });
+
+        ImageButton button4 = (ImageButton) findViewById(R.id.btnAddLocation);
+        if(log_id == -1) {
+            button4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    lf.requestLocation();
+                }
+            });
+        }else{
+            button4.setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -140,35 +150,56 @@ public class LogCreateActivity extends ActionBarActivity {
         EditText et = (EditText) findViewById(R.id.editText_log_title);
         if(et.getText().toString().equals("")){
             Toast.makeText(getApplicationContext(), "Text can't be empty", Toast.LENGTH_SHORT).show();
-        }else{
+        }else {
             DBHandler db = new DBHandler(this, null);
-            if(log_id != -1) {
-                Logs log = db.findLog(log_id);
-                log.set_text(et.getText().toString());
-                db.updateLog(log);
-            } else {
-                Logs log = new Logs(act_id,et.getText().toString());
-                if(type == REQ_CAM || type == REQ_GAL){
-                    Bitmap bmp;
-                    try {
-                        bmp = ((BitmapDrawable) viewImage.getDrawable()).getBitmap();
+            if (lf.is_requesting) {
+                Toast.makeText(getApplicationContext(), "Still requesting location.. ", Toast.LENGTH_SHORT).show();
+            }else {
+                if (log_id != -1) {
+                    Logs log = db.findLog(log_id);
+                    log.set_text(et.getText().toString());
+                    if (type == REQ_CAM || type == REQ_GAL) {
+                        Bitmap bmp;
+                        try {
+                            bmp = ((BitmapDrawable) viewImage.getDrawable()).getBitmap();
 
-                    }catch(Exception e){
-                        bmp = null;
+                        } catch (Exception e) {
+                            bmp = null;
+                        }
+                        log.set_image(bmp);
+                        log.set_speech("");
+                    } else if (type == REQ_SOUND) {
+                        log.set_speech(viewImage.getTag().toString());
+                        log.set_image("");
                     }
-                    log.set_image(bmp);
-                }else if(type == REQ_SOUND){
-                    log.set_speech(viewImage.getTag().toString());
+                    db.updateLog(log);
+                } else {
+                    Logs log = new Logs(act_id, et.getText().toString());
+                    if (type == REQ_CAM || type == REQ_GAL) {
+                        Bitmap bmp;
+                        try {
+                            bmp = ((BitmapDrawable) viewImage.getDrawable()).getBitmap();
+
+                        } catch (Exception e) {
+                            bmp = null;
+                        }
+                        log.set_image(bmp);
+                    } else if (type == REQ_SOUND) {
+                        log.set_speech(viewImage.getTag().toString());
+                    }
+                    String loc = ((TextView) findViewById(R.id.textLocation)).getText().toString();
+                    if(!loc.equals("")){
+                        String[] location = loc.split(",");
+                        log.set_latitude(location[0]);
+                        log.set_longitude(location[1]);
+                    }
+                    Log.d("d", log.toString());
+                    db.addLogs(log);
                 }
-                Log.d("d",log.toString());
-                db.addLogs(log);
-
-
+                finish();
             }
-
-            finish();
-            Toast.makeText(getApplicationContext(),et.getText(),Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
