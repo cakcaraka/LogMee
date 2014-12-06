@@ -46,7 +46,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
     @Override
     public void onBindViewHolder(LogViewHolder actViewHolder, int i) {
         final Logs ci = logList.get(i);
-        actViewHolder.vName.setText(ci.get_text());
+        actViewHolder.vName.setText(ci.get_title());
         actViewHolder.vDate.setText(ci.get_dateTime());
         actViewHolder.vView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override

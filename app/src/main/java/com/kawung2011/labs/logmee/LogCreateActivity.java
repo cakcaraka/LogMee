@@ -63,7 +63,7 @@ public class LogCreateActivity extends ActionBarActivity {
         if(log_id != -1) {
             Logs log = db.findLog(log_id);
             EditText txt = (EditText) findViewById(R.id.editText_log_title);
-            txt.setText(log.get_text());
+            txt.setText(log.get_title());
         }
 
         if (toolbar != null) {
@@ -144,7 +144,7 @@ public class LogCreateActivity extends ActionBarActivity {
             DBHandler db = new DBHandler(this, null);
             if(log_id != -1) {
                 Logs log = db.findLog(log_id);
-                log.set_text(et.getText().toString());
+                log.set_title(et.getText().toString());
                 db.updateLog(log);
             } else {
                 Logs log = new Logs(act_id,et.getText().toString());
