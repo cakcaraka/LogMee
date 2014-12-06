@@ -138,7 +138,13 @@ public class DBHandler extends SQLiteOpenHelper {
         db.delete(TABLE_ACTIVITIES, "_id ="+id, null);
         db.close();
     }
-
+    public List<Activities> fetchAllActivities(String status){
+        if(status.equals("")){
+            return fetchAllActivities();
+        }else{
+            return fetchAllActivities(Integer.parseInt(status));
+        }
+    }
     public List<Activities> fetchAllActivities(){
         return fetchAllActivities(2);
     }
@@ -218,8 +224,12 @@ public class DBHandler extends SQLiteOpenHelper {
         return activity;
     }
 
-    public List<Activities> findActivityByName(String activityName) {
+    public List<Activities> findActivityByName(String activityName,String status) {
         String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_NAME + " like \"%" + activityName +"%\"";
+        if(!status.equals("")){
+            query += " and " + A_STATUS +" = " + status;
+        }
+        query += " order by " + A_ID + " desc";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<Activities> acts = new ArrayList<Activities>();

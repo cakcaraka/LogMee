@@ -65,7 +65,13 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
         actViewHolder.vView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                final CharSequence[] options = { "Update", "Delete", "Cancel" };
+                String set = "";
+                if(activity.get_status().equals("0")){
+                    set = "Set Done";
+                }else{
+                    set = "Set Ongoing";
+                }
+                final CharSequence[] options = { "Update",set ,"Delete", "Cancel" };
                 AlertDialog.Builder builder = new AlertDialog.Builder(act);
                 builder.setTitle("Action!");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -87,6 +93,24 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             ctx.startActivity(intent);
 
+                        }else if (options[item].equals("Set Done"))
+                        {
+                            DBHandler db = new DBHandler(ctx, null);
+                            activity.set_status("1");
+                            db.updateActivity(activity);
+                            Intent intent = new Intent(ctx, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            ctx.startActivity(intent);
+                        }else if (options[item].equals("Set Ongoing"))
+                        {
+                            DBHandler db = new DBHandler(ctx, null);
+                            activity.set_status("0");
+                            db.updateActivity(activity);
+                            Intent intent = new Intent(ctx, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            ctx.startActivity(intent);
                         }
                         else if (options[item].equals("Cancel")) {
                             dialog.dismiss();

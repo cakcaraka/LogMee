@@ -25,6 +25,7 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private RecyclerView recList;
+    private static String last_seen = "";
     String title = "Logmee";
 
     @Override
@@ -44,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ActAdminFragment())
+                    .add(R.id.container, ActAdminFragment.newInstance(this.last_seen,toolbar))
                     .commit();
         }
 
@@ -53,18 +54,21 @@ public class MainActivity extends ActionBarActivity {
     private void initDrawer() {
         //setup navigation drawer
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.txt_open, R.string.txt_close) {
+            private String lastTitle = "";
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                // when drawer closed
-                toolbar.setTitle(title);
+                if(toolbar.getTitle().equals("Choose Action")){
+                    toolbar.setTitle(lastTitle);
+                }
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 // when drawer open
-                toolbar.setTitle("Nav menu");
+                lastTitle = toolbar.getTitle().toString();
+                toolbar.setTitle("Choose Action");
             }
         };
 
@@ -80,6 +84,35 @@ public class MainActivity extends ActionBarActivity {
                 drawerLayout.closeDrawers();
             }
         });
+        ((LinearLayout) findViewById(R.id.viewAll)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                last_seen = ActAdminFragment.TYPE_ALL;
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ALL,toolbar));
+                drawerLayout.closeDrawers();
+            }
+        });
+
+        ((LinearLayout) findViewById(R.id.viewOngoing)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                last_seen = ActAdminFragment.TYPE_ONGOING;
+
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ONGOING,toolbar));
+                drawerLayout.closeDrawers();
+            }
+        });
+
+        ((LinearLayout) findViewById(R.id.viewDone)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                last_seen = ActAdminFragment.TYPE_DONE;
+
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_DONE,toolbar));
+                drawerLayout.closeDrawers();
+            }
+        });
+
     }
 
     private void changeFragment(Fragment fr){

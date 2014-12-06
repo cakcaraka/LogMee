@@ -11,6 +11,8 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,8 +30,10 @@ import java.util.List;
 public class ActAdminFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_TYPE = "type";
+    public static final String TYPE_ALL = "";
+    public static final String TYPE_ONGOING = "0";
+    public static final String TYPE_DONE = "1";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -37,12 +41,23 @@ public class ActAdminFragment extends Fragment {
 
     private RecyclerView recList;
     private FloatingActionButton fabButton;
-   public static ActAdminFragment newInstance(String param1, String param2) {
+   public static ActAdminFragment newInstance(String param1,Toolbar toolbar) {
         ActAdminFragment fragment = new ActAdminFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_TYPE, param1);
         fragment.setArguments(args);
+        if(toolbar != null){
+            String title = "";
+            if(param1.equals(TYPE_ALL)){
+                title = "Logmee - All";
+            }else if(param1.equals(TYPE_ONGOING)){
+                title = "Logmee - Ongoing";
+            }else if(param1.equals(TYPE_DONE)){
+                title = "Logmee - Done";
+            }
+            toolbar.setTitle(title);
+        }
+
         return fragment;
     }
 
@@ -64,7 +79,31 @@ public class ActAdminFragment extends Fragment {
         }
 
     }
+    @Override
+    public void onAttach(Activity act){
+        super.onAttach(act);
+        Log.d("d", "hehe");
+        if(fabButton == null && !getArguments().getString(ARG_TYPE).equals("1")) {
+            fabButton = new FloatingActionButton.Builder(getActivity())
+                    .withDrawable(getResources().getDrawable(R.drawable.float_add))
+                    .withButtonColor(Color.rgb(233, 30, 99))
+                    .withGravity(Gravity.BOTTOM | Gravity.RIGHT)
+                    .withButtonSize(64)
+                    .withMargins(0, 16, 16, 0)
+                    .create();
 
+            fabButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getActivity().getApplicationContext(), ActCreateActivity.class);
+                    startActivity(i);
+                }
+            });
+            Log.d("d", "huhu");
+
+        }
+
+    }
 
 
     @Override
@@ -73,28 +112,14 @@ public class ActAdminFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.act_admin_fragment, container, false);
 
-        fabButton = new FloatingActionButton.Builder(getActivity())
-                .withDrawable(getResources().getDrawable(R.drawable.float_add))
-                .withButtonColor(Color.rgb(233, 30, 99))
-                .withGravity(Gravity.BOTTOM | Gravity.RIGHT)
-                .withButtonSize(64)
-                .withMargins(0, 16, 16, 0)
-                .create();
 
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity().getApplicationContext(), ActCreateActivity.class);
-                startActivity(i);
-            }
-        });
         recList = (RecyclerView) v.findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        updateList("");
+        updateList("",getArguments().getString(ARG_TYPE));
 
         setHasOptionsMenu(true);
         return v;
@@ -109,7 +134,7 @@ public class ActAdminFragment extends Fragment {
         {
             @Override
             public boolean onQueryTextChange(String query) {
-                updateList(query);
+                updateList(query,getArguments().getString(ARG_TYPE));
                 return true;
             }
             @Override
@@ -122,15 +147,16 @@ public class ActAdminFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public void updateList(String query)
+    public void updateList(String query,String status)
     {
         DBHandler db = new DBHandler(getActivity().getApplicationContext(),null);
 
         List<Activities> acts;
         if(query.equals("")) {
-            acts =db.fetchAllActivities();
+                acts =db.fetchAllActivities(status);
+
         }else{
-            acts = db.findActivityByName(query);
+            acts = db.findActivityByName(query, status);
         }
         ActAdapter actAdapter = new ActAdapter(acts,getActivity());
         recList.setAdapter(actAdapter);

@@ -16,4 +16,17 @@
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>
+
+
+    <declare-styleable name="FloatLabelLayout">
+        <attr name="floatLabelTextAppearance" format="reference" />
+        <attr name="floatLabelSidePadding" format="reference|dimension" />
+    </declare-styleable>
+    <style name="TextAppearance.YourApp.FloatLabel" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
 </resources>
