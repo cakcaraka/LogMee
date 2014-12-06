@@ -68,14 +68,19 @@ public class DBHandler extends SQLiteOpenHelper {
                 L_DATE_TIME + " text)";
         db.execSQL(sql);
 
-        sql = "create table widgetData ( _id integer primary key AUTOINCREMENT NOT NULL, id_activity integer)";
-        db.execSQL(sql);
-        db.execSQL("insert into widgetData values(1, -1)");
-
-        insertSomeData(db);
+        //sql = "create table widgetData ( _id integer primary key AUTOINCREMENT NOT NULL, id_pendingIntent integer)";
+        //db.execSQL(sql);
+        //insertSomeData(db);
     }
+  /*  public void addAWidgetPendingIntent(int pendingIntentId) {
+        ContentValues values = new ContentValues();
+        values.put("id_pendingIntent", pendingIntentId);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert("widgetData", null, values);
+        db.close();
+    }*/
 
-    public int findWidgetActivityId() {
+    /*public int findWidgetActivityId() {
         String query = "Select * FROM widgetData where _id = 1";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -96,7 +101,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update("widgetData", values, "_id = 1", null );
         db.close();
-    }
+    }*/
 
 
     private void insertSomeData(SQLiteDatabase db) {
