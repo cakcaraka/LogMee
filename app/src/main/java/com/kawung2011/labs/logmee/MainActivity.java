@@ -1,6 +1,7 @@
 package com.kawung2011.labs.logmee;
 
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -27,6 +28,7 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView recList;
     private static String last_seen = "";
     String title = "Logmee";
+    private int current_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, ActAdminFragment.newInstance(this.last_seen,toolbar))
                     .commit();
+            current_id = R.id.viewAll;
         }
 
     }
@@ -75,20 +78,36 @@ public class MainActivity extends ActionBarActivity {
         // setDrawerlisterner
         drawerLayout.setDrawerListener(drawerToggle);
 
-        LinearLayout set = (LinearLayout) findViewById(R.id.drawerSettings);
-        set.setOnClickListener(new View.OnClickListener() {
+        ((LinearLayout) findViewById(R.id.drawerSettings)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "abc", Toast.LENGTH_LONG).show();
-                changeFragment(new PlaceholderFragment());
-                drawerLayout.closeDrawers();
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
+                //changeFragment(new PlaceholderFragment());
+                //drawerLayout.closeDrawers();
             }
         });
+        ((LinearLayout) findViewById(R.id.drawerFeedback)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
+                //changeFragment(new PlaceholderFragment());
+                //drawerLayout.closeDrawers();
+            }
+        });
+        ((LinearLayout) findViewById(R.id.drawerHelp)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
+                //changeFragment(new PlaceholderFragment());
+                //drawerLayout.closeDrawers();
+            }
+        });
+
         ((LinearLayout) findViewById(R.id.viewAll)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 last_seen = ActAdminFragment.TYPE_ALL;
-                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ALL,toolbar));
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ALL,toolbar),R.id.viewAll);
                 drawerLayout.closeDrawers();
             }
         });
@@ -98,7 +117,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 last_seen = ActAdminFragment.TYPE_ONGOING;
 
-                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ONGOING,toolbar));
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ONGOING,toolbar),R.id.viewOngoing);
                 drawerLayout.closeDrawers();
             }
         });
@@ -108,18 +127,22 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 last_seen = ActAdminFragment.TYPE_DONE;
 
-                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_DONE,toolbar));
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_DONE,toolbar),R.id.viewDone);
                 drawerLayout.closeDrawers();
             }
         });
 
     }
 
-    private void changeFragment(Fragment fr){
+    private void changeFragment(Fragment fr, int id){
+        findViewById(current_id).setBackgroundColor(Color.parseColor("#ffffffff"));
+        findViewById(id).setBackgroundColor(Color.parseColor("#dddddd"));
+        current_id = id;
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fr)
                 .commit();
+
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

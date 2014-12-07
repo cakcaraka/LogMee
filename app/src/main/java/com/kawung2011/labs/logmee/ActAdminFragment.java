@@ -36,11 +36,9 @@ public class ActAdminFragment extends Fragment {
     public static final String TYPE_DONE = "1";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private RecyclerView recList;
     private FloatingActionButton fabButton;
+    private static String query = "";
    public static ActAdminFragment newInstance(String param1,Toolbar toolbar) {
         ActAdminFragment fragment = new ActAdminFragment();
         Bundle args = new Bundle();
@@ -49,11 +47,11 @@ public class ActAdminFragment extends Fragment {
         if(toolbar != null){
             String title = "";
             if(param1.equals(TYPE_ALL)){
-                title = "Logmee - All";
+                title = "LogMee - All";
             }else if(param1.equals(TYPE_ONGOING)){
-                title = "Logmee - Ongoing";
+                title = "LogMee - Ongoing";
             }else if(param1.equals(TYPE_DONE)){
-                title = "Logmee - Done";
+                title = "LogMee - Finished";
             }
             toolbar.setTitle(title);
         }
@@ -82,7 +80,6 @@ public class ActAdminFragment extends Fragment {
     @Override
     public void onAttach(Activity act){
         super.onAttach(act);
-        Log.d("d", "hehe");
         if(fabButton == null && !getArguments().getString(ARG_TYPE).equals("1")) {
             fabButton = new FloatingActionButton.Builder(getActivity())
                     .withDrawable(getResources().getDrawable(R.drawable.float_add))
@@ -99,12 +96,14 @@ public class ActAdminFragment extends Fragment {
                     startActivity(i);
                 }
             });
-            Log.d("d", "huhu");
-
         }
 
     }
-
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateList(query,getArguments().getString(ARG_TYPE));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -134,6 +133,7 @@ public class ActAdminFragment extends Fragment {
         {
             @Override
             public boolean onQueryTextChange(String query) {
+                ActAdminFragment.query = query;
                 updateList(query,getArguments().getString(ARG_TYPE));
                 return true;
             }

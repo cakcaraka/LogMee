@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -45,10 +46,25 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
         final Activities activity = actList.get(i);
         actViewHolder.vName.setText(activity.get_name());
         actViewHolder.vDate.setText(activity.get_dateTime());
-        actViewHolder.vDescription.setText("Lorem Ipsum");
+        actViewHolder.vTextDoc.setText(""+activity.get_count_logs_text());
+        actViewHolder.vTextImage.setText(""+activity.get_count_logs_image());
+        actViewHolder.vTextSound.setText(""+activity.get_count_logs_speech());
+        Log.d("d",activity.toString());
         Bitmap bm = activity.getBitmap();
         if(bm != null){
             actViewHolder.vImage.setImageBitmap(bm);
+        }else{
+            int jj = activity.get_id() % 3;
+            int drawable = 0;
+            if(jj == 0){
+                drawable = R.drawable.default_1;
+            }else if(jj == 1){
+                drawable = R.drawable.default_2;
+            }else{
+                drawable = R.drawable.default_3;
+            }
+            Drawable myDraw = act.getResources().getDrawable(drawable);
+            actViewHolder.vImage.setImageDrawable(myDraw);
         }
         final int ii = i;
         actViewHolder.vView.setOnClickListener(new View.OnClickListener() {
@@ -133,14 +149,20 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
 
     public static class ActViewHolder extends RecyclerView.ViewHolder  {
         protected TextView vName;
-        protected TextView vDescription;
+        protected TextView vTextDoc;
+        protected TextView vTextImage;
+        protected TextView vTextSound;
+
         protected ImageView vImage;
         protected TextView vDate;
         protected View vView;
         public ActViewHolder(View v) {
             super(v);
             vName =  (TextView) v.findViewById(R.id.textTitle);
-            vDescription = (TextView)  v.findViewById(R.id.textDescription);
+            vTextDoc = (TextView)  v.findViewById(R.id.textDocument);
+            vTextImage = (TextView)  v.findViewById(R.id.textImage);
+            vTextSound = (TextView)  v.findViewById(R.id.textSound);
+
             vImage = (ImageView) v.findViewById(R.id.imageAct);
             vDate = (TextView) v.findViewById(R.id.textDate);
             vView =v;
