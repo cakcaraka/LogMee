@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String W_WIDGET_ID = "widgetId";
     private static final String W_ACTIVITY_ID = "activityId";
 
+
+
     //Constructor
     public DBHandler(Context context, SQLiteDatabase.CursorFactory factory)  {
         super(context, DB_NAME, factory, DB_VERSION);
@@ -78,6 +79,7 @@ public class DBHandler extends SQLiteOpenHelper {
         //db.execSQL(sql);
         //insertSomeData(db);
     }
+
     public void addAWidgetData(int widgetId, int activityId) {
         ContentValues values = new ContentValues();
         values.put(W_WIDGET_ID, widgetId);
@@ -105,35 +107,11 @@ public class DBHandler extends SQLiteOpenHelper {
         return widget;
     }
 
-<<<<<<< HEAD
-
-    private void insertSomeData(SQLiteDatabase db) {
-        db.execSQL("insert into activities values(1, \"Tekmob\", 0, \"\", \"24/11/2014\", 0, 0, 0);");
-        db.execSQL("insert into activities values(2, \"PMPL\", 0, \"\", \"24/11/2014\", 0, 0, 0);");
-        db.execSQL("insert into activities values(3, \"Sister\", 1, \"\", \"24/11/2014\", 0, 0, 0);");
-        db.execSQL("insert into logs values(0, 0, \"Brainstorming ide\", \"image brainstorming\", \"speech brainstorming\", \"kantin\", \"-1.4\" , \"1.5\", \"24/11/2014\");");
-        db.execSQL("insert into logs values(1, 0, null, \"image sketch\", null, \"kantin\", \"-1.4\" , \"1.5\", \"24/11/2014\");");
-        db.execSQL("insert into logs values(2, 0, null, \"image mock up\", null, \"perpustakaan\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
-        db.execSQL("insert into logs values(3, 0, null, \"desain ERD\", null, \"perpustakaan\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
-        db.execSQL("insert into logs values(4, 0, \"setting environment\", null, null, \"perpustakaan\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
-        db.execSQL("insert into logs values(5, 0, null, null, \"speech instalasi android studio\", \"perpustakaan\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
-        db.execSQL("insert into logs values(6, 1, \"usability testing\", null, null, \"lab\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
-    }
-=======
-    public void updateWidgetActivityId(int activity_id) {
-        ContentValues values = new ContentValues();
-        values.put("id_activity", activity_id);
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.update("widgetData", values, "_id = 1", null );
-        db.close();
-    }*/
->>>>>>> origin/master
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists " + TABLE_ACTIVITIES);
         db.execSQL("drop table if exists " + TABLE_LOGS);
-        db.execSQL("drop table if exists " + TABLE_WIDGET);
         onCreate(db);
     }
 
@@ -336,13 +314,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(L_ACTIVITY, log.get_activiy_id());
 
         SQLiteDatabase db = this.getWritableDatabase();
-<<<<<<< HEAD
-        Activities activity = findActivity(db, log.get_activiy_id());
-
-        values.put(L_TITLE, log.get_title());
-=======
         values.put(L_TEXT, log.get_text());
->>>>>>> origin/master
         values.put(L_DESCRIPTION, log.get_description());
         values.put(L_IMG, log.get_image());
         values.put(L_SPEECH, log.get_speech());

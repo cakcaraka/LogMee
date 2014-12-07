@@ -6,6 +6,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -51,9 +54,25 @@ public class LogMeeAppWidget extends AppWidgetProvider {
 
                 // Get the layout for the App Widget and attach an on-click listener
                 // to the button
-                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.log_mee_app_widget);
+                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
                 views.setTextViewText(R.id.appwidget_text, activity.get_name());
-                if(activity.getBitmap() != null) views.setImageViewBitmap(R.id.imageWidget, activity.getBitmap());
+                Bitmap bm = activity.getBitmap();
+                if(bm == null){
+                    int jj = activity.get_id() % 3;
+                    int drawable = 0;
+                    if(jj == 0){
+                        drawable = R.drawable.default_1;
+                    }else if(jj == 1){
+                        drawable = R.drawable.default_2;
+                    }else{
+                        drawable = R.drawable.default_3;
+                    }
+                    Drawable myDraw = context.getResources().getDrawable(drawable);
+                    Bitmap bitmap = ((BitmapDrawable) myDraw).getBitmap();
+                    views.setImageViewBitmap(R.id.imageWidget,bitmap);
+                }else{
+                    views.setImageViewBitmap(R.id.imageWidget, activity.getBitmap());
+                }
                 views.setOnClickPendingIntent(R.id.imageWidget, pendingIntent);
                 views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
                 views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);

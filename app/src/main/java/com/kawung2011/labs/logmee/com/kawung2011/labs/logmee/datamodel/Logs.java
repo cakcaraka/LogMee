@@ -65,13 +65,8 @@ public class Logs {
         return _text;
     }
 
-<<<<<<< HEAD
-    public void set_title(String _text) {
-        this._title = _text;
-=======
     public void set_text(String _text) {
         this._text = _text;
->>>>>>> origin/master
     }
 
     public String get_image() {
