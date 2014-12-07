@@ -30,6 +30,10 @@ public class LocationFinder implements LocationListener {
         is_requesting = false;
     }
 
+    public void stop(){
+        locationManager.removeUpdates(this);
+        is_requesting = false;
+    }
     public void requestLocation(){
         if(is_requesting){
             locationManager.removeUpdates(this);
@@ -45,7 +49,9 @@ public class LocationFinder implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         txtLat.setText(location.getLatitude() + "," +location.getLongitude());
-        requestLocation();
+        locationManager.removeUpdates(this);
+        is_requesting = false;
+
         Log.d("d",location.getLatitude() + "," +location.getLatitude());
     }
 

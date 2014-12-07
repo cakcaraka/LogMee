@@ -108,7 +108,6 @@ public class ActAdapter extends RecyclerView.Adapter<ActAdapter.ActViewHolder> {
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             ctx.startActivity(intent);
-
                         }else if (options[item].equals("Set Done"))
                         {
                             DBHandler db = new DBHandler(ctx, null);

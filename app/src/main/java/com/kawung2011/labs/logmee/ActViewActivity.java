@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
@@ -51,7 +52,10 @@ public class ActViewActivity extends ActionBarActivity {
         Intent intent = getIntent();
         id = intent.getIntExtra("_id", 0);
         act = db.findActivity(id);
-
+        if(act == null){
+            Toast.makeText(this,"activity missing, may have been deleted",Toast.LENGTH_SHORT).show();
+            finish();
+        }
         if (toolbar != null) {
             toolbar.setTitle("");
             setSupportActionBar(toolbar);

@@ -19,6 +19,7 @@ public class Logs {
     private int _id;
     private int _activiy_id;
     private String _text;
+    private String _description;
     private String _image;
     private String _speech;
     private String _location;
@@ -30,11 +31,12 @@ public class Logs {
 
     }
     public Logs(int _activiy_id,String text){
-        this(_activiy_id,text,null,null,null,null,null,new Timestamp(new Date().getTime()).toString());
+        this(_activiy_id,text, null ,null,null,null,null,null,new Timestamp(new Date().getTime()).toString());
     }
-    public Logs(int _activiy_id, String _text, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
+    public Logs(int _activiy_id, String _text, String _description, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
         this._activiy_id = _activiy_id;
         this._text = _text;
+        this._description = _description;
         this._image = _image;
         this._speech = _speech;
         this._location = _location;
@@ -140,6 +142,14 @@ public class Logs {
         this._dateTime = _dateTime;
     }
 
+    public String get_description() {
+        return _description;
+    }
+
+    public void set_description(String _description) {
+        this._description = _description;
+    }
+
     public String get_latitude() {
         return _latitude;
     }
@@ -148,8 +158,11 @@ public class Logs {
         this._latitude = _latitude;
     }
 
+    public boolean hasLocation(){
+        return get_latitude() != null && !get_latitude().equals("") && get_longitude() != null && !get_longitude().equals("");
+    }
     @Override
     public String toString(){
-        return this.get_id() + "," + this.get_activiy_id() + "," + this.get_text()+ "," + this.get_image() + "," + this.get_speech() + "," + this.get_location() + "," + this.get_longitude() + "," + this.get_latitude() + "," + this.get_dateTime();
+        return this.get_id() + "," + this.get_activiy_id() + "," + this.get_text()+ "," + this.get_description() + "," + this.get_image() + "," + this.get_speech() + "," + this.get_location() + "," + this.get_longitude() + "," + this.get_latitude() + "," + this.get_dateTime();
     }
 }

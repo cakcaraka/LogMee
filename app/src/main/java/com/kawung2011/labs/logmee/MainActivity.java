@@ -49,7 +49,17 @@ public class MainActivity extends ActionBarActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, ActAdminFragment.newInstance(this.last_seen,toolbar))
                     .commit();
-            current_id = R.id.viewAll;
+            findViewById(R.id.viewAll).setBackgroundColor(Color.parseColor("#ffffffff"));
+            int id = 0;
+            if(this.last_seen.equals("")){
+                id = R.id.viewAll;
+            }else if(this.last_seen.equals("0")){
+                id = R.id.viewOngoing;
+            }else if(this.last_seen.equals("1")){
+                id = R.id.viewDone;
+            }
+            findViewById(id).setBackgroundColor(Color.parseColor("#dddddd"));
+            current_id = id;
         }
 
     }

@@ -48,6 +48,16 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
         final Logs ci = logList.get(i);
         actViewHolder.vName.setText(ci.get_text());
         actViewHolder.vDate.setText(ci.get_dateTime());
+        if(ci.get_description() == null || ci.get_description().equals("")){
+            actViewHolder.vDescription.setVisibility(View.GONE);
+        }else{
+            actViewHolder.vDescription.setText(ci.get_description());
+        }
+        if(ci.hasLocation()){
+            actViewHolder.vLocation.setText("from " + ci.get_latitude() + "," + ci.get_longitude());
+        }else{
+            actViewHolder.vLocation.setVisibility(View.GONE);
+        }
         actViewHolder.vView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -82,8 +92,8 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
 
             ImageView iv = (ImageView) actViewHolder.vView.findViewById(R.id.logImage);
             final Button btn = (Button) actViewHolder.vView.findViewById(R.id.logSound);
-            iv.setVisibility(View.INVISIBLE);
-            btn.setVisibility(View.INVISIBLE);
+            iv.setVisibility(View.GONE);
+            btn.setVisibility(View.GONE);
             Bitmap bm = ci.get_image_bitmap();
             if(bm != null){
                 iv.setImageBitmap(bm);
@@ -128,6 +138,8 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
     public static class LogViewHolder extends RecyclerView.ViewHolder  {
         protected TextView vName;
         protected TextView vDate;
+        protected TextView vLocation;
+        protected TextView vDescription;
         protected View vView;
         protected LinearLayout vLayout;
         protected ImageView vImage;
@@ -138,6 +150,9 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
             vView =v;
             vLayout = (LinearLayout) v.findViewById(R.id.logLayout);
             vImage = (ImageView) v.findViewById(R.id.imageMark);
+            vLocation = (TextView) v.findViewById(R.id.textLocation);
+            vDescription = (TextView) v.findViewById(R.id.textDescription);
+
         }
 
 

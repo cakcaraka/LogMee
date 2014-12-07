@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.view.animation.AccelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String L_ID ="_id";
     private static final String L_ACTIVITY = "activity";
     private static final String L_TEXT = "text";
+    private static final String L_DESCRIPTION = "description";
     private static final String L_IMG = "image";
     private static final String L_SPEECH = "speech";
     private static final String L_LOCATION = "location";
@@ -53,6 +53,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sql = "create table " + TABLE_LOGS + " (" + L_ID + " integer primary key  AUTOINCREMENT NOT NULL, " +
                 L_ACTIVITY + " integer, " +
                 L_TEXT + " text, " +
+                L_DESCRIPTION + " text, " +
                 L_IMG + " blob, " +
                 L_SPEECH + " text, " +
                 L_LOCATION + " text, " +
@@ -60,8 +61,41 @@ public class DBHandler extends SQLiteOpenHelper {
                 L_LOCATION_LATITUDE + " text, " +
                 L_DATE_TIME + " text)";
         db.execSQL(sql);
+
+        //sql = "create table widgetData ( _id integer primary key AUTOINCREMENT NOT NULL, id_pendingIntent integer)";
+        //db.execSQL(sql);
         //insertSomeData(db);
     }
+  /*  public void addAWidgetPendingIntent(int pendingIntentId) {
+        ContentValues values = new ContentValues();
+        values.put("id_pendingIntent", pendingIntentId);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert("widgetData", null, values);
+        db.close();
+    }*/
+
+    /*public int findWidgetActivityId() {
+        String query = "Select * FROM widgetData where _id = 1";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        int activity_id = -1;
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            cursor.getString(0);
+            activity_id = Integer.parseInt(cursor.getString(1));
+            cursor.close();
+        }
+        db.close();
+        return activity_id;
+    }
+
+    public void updateWidgetActivityId(int activity_id) {
+        ContentValues values = new ContentValues();
+        values.put("id_activity", activity_id);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update("widgetData", values, "_id = 1", null );
+        db.close();
+    }*/
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -270,6 +304,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         values.put(L_TEXT, log.get_text());
+        values.put(L_DESCRIPTION, log.get_description());
         values.put(L_IMG, log.get_image());
         values.put(L_SPEECH, log.get_speech());
 
@@ -288,6 +323,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(L_ACTIVITY, log.get_activiy_id());
         values.put(L_TEXT, log.get_text());
+        values.put(L_DESCRIPTION, log.get_description());
         values.put(L_IMG, log.get_image());
         values.put(L_SPEECH, log.get_speech());
         values.put(L_LOCATION, log.get_location());
@@ -325,12 +361,13 @@ public class DBHandler extends SQLiteOpenHelper {
             log.set_id(Integer.parseInt(cursor.getString(0)));
             log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
             log.set_text(cursor.getString(2));
-            log.set_image(cursor.getString(3));
-            log.set_speech(cursor.getString(4));
-            log.set_location(cursor.getString(5));
-            log.set_longitude(cursor.getString(6));
-            log.set_latitude(cursor.getString(7));
-            log.set_dateTime(cursor.getString(8));
+            log.set_description(cursor.getString(3));
+            log.set_image(cursor.getString(4));
+            log.set_speech(cursor.getString(5));
+            log.set_location(cursor.getString(6));
+            log.set_longitude(cursor.getString(7));
+            log.set_latitude(cursor.getString(8));
+            log.set_dateTime(cursor.getString(9));
             cursor.close();
         } else {
             log = null;
@@ -348,12 +385,13 @@ public class DBHandler extends SQLiteOpenHelper {
             log.set_id(Integer.parseInt(cursor.getString(0)));
             log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
             log.set_text(cursor.getString(2));
-            log.set_image(cursor.getString(3));
-            log.set_speech(cursor.getString(4));
-            log.set_location(cursor.getString(5));
-            log.set_longitude(cursor.getString(6));
-            log.set_latitude(cursor.getString(7));
-            log.set_dateTime(cursor.getString(8));
+            log.set_description(cursor.getString(3));
+            log.set_image(cursor.getString(4));
+            log.set_speech(cursor.getString(5));
+            log.set_location(cursor.getString(6));
+            log.set_longitude(cursor.getString(7));
+            log.set_latitude(cursor.getString(8));
+            log.set_dateTime(cursor.getString(9));
             cursor.close();
         } else {
             log = null;
@@ -381,12 +419,13 @@ public class DBHandler extends SQLiteOpenHelper {
                 log.set_id(Integer.parseInt(cursor.getString(0)));
                 log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
                 log.set_text(cursor.getString(2));
-                log.set_image(cursor.getString(3));
-                log.set_speech(cursor.getString(4));
-                log.set_location(cursor.getString(5));
-                log.set_longitude(cursor.getString(6));
-                log.set_latitude(cursor.getString(7));
-                log.set_dateTime(cursor.getString(8));
+                log.set_description(cursor.getString(3));
+                log.set_image(cursor.getString(4));
+                log.set_speech(cursor.getString(5));
+                log.set_location(cursor.getString(6));
+                log.set_longitude(cursor.getString(7));
+                log.set_latitude(cursor.getString(8));
+                log.set_dateTime(cursor.getString(9));
                 logs.add(log);
                 if(cursor.isLast()){
                     break;
@@ -452,6 +491,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public static String getlText() {
         return L_TEXT;
     }
+
+    public static String getlDescription() { return L_DESCRIPTION; }
 
     public static String getlImg() {
         return L_IMG;

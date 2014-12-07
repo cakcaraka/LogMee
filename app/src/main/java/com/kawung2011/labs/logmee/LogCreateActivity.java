@@ -45,6 +45,7 @@ public class LogCreateActivity extends ActionBarActivity {
     private int REQ_GAL = 2;
     private LinearLayout mediaLayout;
     private ImageView viewImage;
+    private Button viewSound;
     private int type = -1;
     private int log_id;
     private int act_id;
@@ -64,6 +65,39 @@ public class LogCreateActivity extends ActionBarActivity {
             Logs log = db.findLog(log_id);
             EditText txt = (EditText) findViewById(R.id.editText_log_title);
             txt.setText(log.get_text());
+            ((EditText) findViewById(R.id.editText_log_desc)).setText(log.get_description());
+            if(log.get_image_bitmap() != null) {
+                viewImage = new ImageView(this);
+                viewImage.setImageBitmap(log.get_image_bitmap());
+                mediaLayout.removeAllViews();
+                mediaLayout.addView(viewImage);
+            }else if(log.get_speech() != null && !log.get_speech().equals("")){
+                viewSound = new Button(this);
+                viewSound.setVisibility(View.VISIBLE);
+                viewSound.setTag(false);
+                viewSound.setText("Play");
+                final LogAudioPlayer pl = new LogAudioPlayer(log.get_speech(),viewSound);
+                viewSound.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if(viewSound.getTag() == true){
+                            viewSound.setTag(false);
+                            viewSound.setText("play");
+                            pl.stop();
+                        }else{
+                            viewSound.setTag(true);
+                            viewSound.setText("stop");
+                            pl.play();
+                        }
+                    }
+                });
+                viewImage.setTag(log.get_speech());
+                mediaLayout.removeAllViews();
+                mediaLayout.addView(viewSound);
+                mediaLayout.addView(viewImage);
+            }
         }
 
         if (toolbar != null) {
@@ -122,6 +156,11 @@ public class LogCreateActivity extends ActionBarActivity {
 
 
     @Override
+    public void onPause(){
+        super.onPause();
+        lf.stop();
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_create, menu);
@@ -148,6 +187,8 @@ public class LogCreateActivity extends ActionBarActivity {
 
     private void createLog() {
         EditText et = (EditText) findViewById(R.id.editText_log_title);
+        EditText ed = (EditText) findViewById(R.id.editText_log_desc);
+
         if(et.getText().toString().equals("")){
             Toast.makeText(getApplicationContext(), "Text can't be empty", Toast.LENGTH_SHORT).show();
         }else {
@@ -158,10 +199,12 @@ public class LogCreateActivity extends ActionBarActivity {
                 if (log_id != -1) {
                     Logs log = db.findLog(log_id);
                     log.set_text(et.getText().toString());
+                    log.set_description(ed.getText().toString());
                     if (type == REQ_CAM || type == REQ_GAL) {
                         Bitmap bmp;
                         try {
                             bmp = ((BitmapDrawable) viewImage.getDrawable()).getBitmap();
+
 
                         } catch (Exception e) {
                             bmp = null;
@@ -175,6 +218,7 @@ public class LogCreateActivity extends ActionBarActivity {
                     db.updateLog(log);
                 } else {
                     Logs log = new Logs(act_id, et.getText().toString());
+                    log.set_description(ed.getText().toString());
                     if (type == REQ_CAM || type == REQ_GAL) {
                         Bitmap bmp;
                         try {
@@ -263,11 +307,32 @@ public class LogCreateActivity extends ActionBarActivity {
                 mediaLayout.addView(viewImage);
             } else if (requestCode == REQ_SOUND) {
                 String sound = data.getStringExtra("path");
+                viewSound = new Button(this);
+                viewSound.setVisibility(View.VISIBLE);
+                viewSound.setTag(false);
+                viewSound.setText("Play");
+                final LogAudioPlayer pl = new LogAudioPlayer(sound,viewSound);
+                viewSound.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if(viewSound.getTag() == true){
+                            viewSound.setTag(false);
+                            viewSound.setText("play");
+                            pl.stop();
+                        }else{
+                            viewSound.setTag(true);
+                            viewSound.setText("stop");
+                            pl.play();
+                        }
+                    }
+                });
                 viewImage.setTag(sound);
                 mediaLayout.removeAllViews();
+                mediaLayout.addView(viewSound);
                 mediaLayout.addView(viewImage);
-                //mediaLayout.addView(viewImage);
-                // do something with B's return values
+
             }
             Log.d("s",""+requestCode);
         }
