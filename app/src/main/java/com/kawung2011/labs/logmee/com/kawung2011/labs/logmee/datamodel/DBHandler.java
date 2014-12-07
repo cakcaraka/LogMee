@@ -23,16 +23,12 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String A_STATUS = "status";
     private static final String A_IMG = "image";
     private static final String A_DATE_TIME = "dateTime";
-    //derived
-    private static final String A_COUNT_TEXT = "count_text";
-    private static final String A_COUNT_IMAGE = "count_image";
-    private static final String A_COUNT_SPEECH = "count_speech";
 
     // table logs
     private static final String TABLE_LOGS = "logs";
     private static final String L_ID ="_id";
     private static final String L_ACTIVITY = "activity";
-    private static final String L_TITLE = "title";
+    private static final String L_TEXT = "text";
     private static final String L_DESCRIPTION = "description";
     private static final String L_IMG = "image";
     private static final String L_SPEECH = "speech";
@@ -58,15 +54,12 @@ public class DBHandler extends SQLiteOpenHelper {
                 A_NAME + " text, " +
                 A_STATUS + " integer, " +
                 A_IMG + " blob, " +
-                A_DATE_TIME + " text, " +
-                A_COUNT_TEXT + " integer, " +
-                A_COUNT_IMAGE + " integer, " +
-                A_COUNT_SPEECH + " integer)";
+                A_DATE_TIME + " text)";
         db.execSQL(sql);
 
         sql = "create table " + TABLE_LOGS + " (" + L_ID + " integer primary key  AUTOINCREMENT NOT NULL, " +
                 L_ACTIVITY + " integer, " +
-                L_TITLE + " text, " +
+                L_TEXT + " text, " +
                 L_DESCRIPTION + " text, " +
                 L_IMG + " blob, " +
                 L_SPEECH + " text, " +
@@ -112,6 +105,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return widget;
     }
 
+<<<<<<< HEAD
 
     private void insertSomeData(SQLiteDatabase db) {
         db.execSQL("insert into activities values(1, \"Tekmob\", 0, \"\", \"24/11/2014\", 0, 0, 0);");
@@ -125,6 +119,15 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("insert into logs values(5, 0, null, null, \"speech instalasi android studio\", \"perpustakaan\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
         db.execSQL("insert into logs values(6, 1, \"usability testing\", null, null, \"lab\", \"-1.4\" , \"1.5\", \"25/11/2014\");");
     }
+=======
+    public void updateWidgetActivityId(int activity_id) {
+        ContentValues values = new ContentValues();
+        values.put("id_activity", activity_id);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update("widgetData", values, "_id = 1", null );
+        db.close();
+    }*/
+>>>>>>> origin/master
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -177,11 +180,17 @@ public class DBHandler extends SQLiteOpenHelper {
     public void deleteActivity(Activities activity) {
         SQLiteDatabase db = this.getWritableDatabase();
         int id = activity.get_id();
-
         db.delete(TABLE_ACTIVITIES, "_id ="+id, null);
+        deleteAllLogByActivity(id);
         db.close();
     }
-
+    public List<Activities> fetchAllActivities(String status){
+        if(status.equals("")){
+            return fetchAllActivities();
+        }else{
+            return fetchAllActivities(Integer.parseInt(status));
+        }
+    }
     public List<Activities> fetchAllActivities(){
         return fetchAllActivities(2);
     }
@@ -206,6 +215,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 activity.set_status(cursor.getString(2));
                 activity.set_image(cursor.getString(3));
                 activity.set_dateTime(cursor.getString(4));
+                activity.set_count_logs_text(this.countTextByActivityId(activity.get_id()));
+                activity.set_count_logs_speech(this.countSpeechByActivityId(activity.get_id()));
+                activity.set_count_logs_image(this.countImageByActivityId(activity.get_id()));
                 acts.add(activity);
                 if(cursor.isLast()){
                     break;
@@ -233,6 +245,10 @@ public class DBHandler extends SQLiteOpenHelper {
             activity.set_status(cursor.getString(2));
             activity.set_image(cursor.getString(3));
             activity.set_dateTime(cursor.getString(4));
+            activity.set_count_logs_text(this.countTextByActivityId(activityId));
+            activity.set_count_logs_speech(this.countSpeechByActivityId(activityId));
+            activity.set_count_logs_image(this.countImageByActivityId(activityId));
+
             cursor.close();
         } else {
             activity = null;
@@ -241,28 +257,52 @@ public class DBHandler extends SQLiteOpenHelper {
         return activity;
     }
 
+    public int countSpeechByActivityId(int ActivityID){
+        String query = "Select count(*) FROM " + TABLE_LOGS + " WHERE " + L_ACTIVITY + " = " + ActivityID +
+                " and " + L_SPEECH + "!= \"\"";
 
-
-    public Activities findActivity(SQLiteDatabase db, int activityId) {
-        String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_ID + " = " + activityId;
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        Activities activity = new Activities();
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            activity.set_id(Integer.parseInt(cursor.getString(0)));
-            activity.set_name(cursor.getString(1));
-            activity.set_status(cursor.getString(2));
-            activity.set_image(cursor.getString(3));
-            activity.set_dateTime(cursor.getString(4));
-            cursor.close();
+            return Integer.parseInt(cursor.getString(0));
         } else {
-            activity = null;
+            return 0;
         }
-        return activity;
     }
 
-    public List<Activities> findActivityByName(String activityName) {
+    public int countTextByActivityId(int ActivityID){
+        String query = "Select count(*) FROM " + TABLE_LOGS + " WHERE " + L_ACTIVITY + " = " + ActivityID +
+                " and (" + L_SPEECH + "= \"\" or "+L_SPEECH+" is null) and ("+ L_IMG + " = \"\" or "+L_IMG+" is null)";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            return Integer.parseInt(cursor.getString(0));
+        } else {
+            return 0;
+        }
+    }
+    public int countImageByActivityId(int ActivityID){
+        String query = "Select count(*) FROM " + TABLE_LOGS + " WHERE " + L_ACTIVITY + " = " + ActivityID +
+                " and " + L_IMG + "!= \"\"";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            return Integer.parseInt(cursor.getString(0));
+        } else {
+            return 0;
+        }
+    }
+    public List<Activities> findActivityByName(String activityName,String status) {
         String query = "Select * FROM " + TABLE_ACTIVITIES + " WHERE " + A_NAME + " like \"%" + activityName +"%\"";
+        if(!status.equals("")){
+            query += " and " + A_STATUS +" = " + status;
+        }
+        query += " order by " + A_ID + " desc";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         List<Activities> acts = new ArrayList<Activities>();
@@ -296,16 +336,16 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(L_ACTIVITY, log.get_activiy_id());
 
         SQLiteDatabase db = this.getWritableDatabase();
+<<<<<<< HEAD
         Activities activity = findActivity(db, log.get_activiy_id());
 
         values.put(L_TITLE, log.get_title());
+=======
+        values.put(L_TEXT, log.get_text());
+>>>>>>> origin/master
         values.put(L_DESCRIPTION, log.get_description());
-        if(log.get_description() != null) activity.set_count_logs_text(activity.get_count_logs_text()+1);
         values.put(L_IMG, log.get_image());
-        if(log.get_image() != null) activity.set_count_logs_image(activity.get_count_logs_image()+1);
         values.put(L_SPEECH, log.get_speech());
-        if(log.get_speech() != null) activity.set_count_logs_speech(activity.get_count_logs_speech()+1);
-        updateActivity(db, activity);
 
         values.put(L_LOCATION, log.get_location());
         values.put(L_LOCATION_LATITUDE, log.get_latitude());
@@ -321,7 +361,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public int updateLog(Logs log) {
         ContentValues values = new ContentValues();
         values.put(L_ACTIVITY, log.get_activiy_id());
-        values.put(L_TITLE, log.get_title());
+        values.put(L_TEXT, log.get_text());
         values.put(L_DESCRIPTION, log.get_description());
         values.put(L_IMG, log.get_image());
         values.put(L_SPEECH, log.get_speech());
@@ -331,25 +371,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(L_DATE_TIME, log.get_dateTime());
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Activities activity = findActivity(db, log.get_activiy_id());
-        Logs oldLog = findLog(db, log.get_id());
-        if(oldLog.get_description() == null && log.get_description() != null) {
-            activity.set_count_logs_text(activity.get_count_logs_text()+1);
-        } else if(oldLog.get_description() != null & log.get_description() == null){
-            activity.set_count_logs_text(activity.get_count_logs_text()-1);
-        }
-        if(oldLog.get_image() == null && log.get_image() != null) {
-            activity.set_count_logs_image(activity.get_count_logs_image()+1);
-        } else if(oldLog.get_image() != null & log.get_image() == null){
-            activity.set_count_logs_image(activity.get_count_logs_image()-1);
-        }
-
-        if(oldLog.get_speech() == null && log.get_speech() != null) {
-            activity.set_count_logs_speech(activity.get_count_logs_speech()+1);
-        } else if(oldLog.get_speech() != null & log.get_speech() == null){
-            activity.set_count_logs_speech(activity.get_count_logs_speech()-1);
-        }
-        updateActivity(db, activity);
 
         int id = log.get_id();
         db.update(TABLE_LOGS, values, "_id ="+id, null );
@@ -360,13 +381,6 @@ public class DBHandler extends SQLiteOpenHelper {
     public void deleteLog(Logs log) {
         SQLiteDatabase db = this.getWritableDatabase();
         int id = log.get_id();
-        Activities activity = findActivity(db, log.get_activiy_id());
-
-        if(log.get_description() != null) activity.set_count_logs_text(activity.get_count_logs_text()-1);
-        if(log.get_image() != null) activity.set_count_logs_image(activity.get_count_logs_image()-1);
-        if(log.get_speech() != null) activity.set_count_logs_speech(activity.get_count_logs_speech()-1);
-        updateActivity(db, activity);
-
         db.delete(TABLE_LOGS, "_id ="+id, null);
         //db.close();
     }
@@ -385,7 +399,7 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             log.set_id(Integer.parseInt(cursor.getString(0)));
             log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
-            log.set_title(cursor.getString(2));
+            log.set_text(cursor.getString(2));
             log.set_description(cursor.getString(3));
             log.set_image(cursor.getString(4));
             log.set_speech(cursor.getString(5));
@@ -409,7 +423,7 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             log.set_id(Integer.parseInt(cursor.getString(0)));
             log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
-            log.set_title(cursor.getString(2));
+            log.set_text(cursor.getString(2));
             log.set_description(cursor.getString(3));
             log.set_image(cursor.getString(4));
             log.set_speech(cursor.getString(5));
@@ -424,9 +438,16 @@ public class DBHandler extends SQLiteOpenHelper {
         return log;
     }
 
-    public List<Logs> fetchAllLogsById(int id) {
+    public List<Logs> fetchAllLogsById(int id){
+        return fetchAllLogsById(id,"");
+    }
+
+    public List<Logs> fetchAllLogsById(int id,String query) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "select * from logs where activity = " +id+";";
+        String selectQuery = "select * from logs where activity = " +id;
+        if(!query.equals("")){
+            selectQuery += " and "+ L_TEXT + " like \"%"+query+"%\"";
+        }
         Cursor cursor = db.rawQuery(selectQuery, null);
         List<Logs> logs = new ArrayList<Logs>();
         if (cursor != null && cursor.moveToFirst()) {
@@ -436,7 +457,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 Logs log = new Logs();
                 log.set_id(Integer.parseInt(cursor.getString(0)));
                 log.set_activiy_id(Integer.parseInt(cursor.getString(1)));
-                log.set_title(cursor.getString(2));
+                log.set_text(cursor.getString(2));
                 log.set_description(cursor.getString(3));
                 log.set_image(cursor.getString(4));
                 log.set_speech(cursor.getString(5));
@@ -493,17 +514,6 @@ public class DBHandler extends SQLiteOpenHelper {
         return A_DATE_TIME;
     }
 
-    public static String getaCountText() {
-        return A_COUNT_TEXT;
-    }
-
-    public static String getaCountImage() {
-        return A_COUNT_IMAGE;
-    }
-
-    public static String getaCountSpeech() {
-        return A_COUNT_SPEECH;
-    }
 
     public static String getTableLogs() {
         return TABLE_LOGS;
@@ -517,8 +527,8 @@ public class DBHandler extends SQLiteOpenHelper {
         return L_ACTIVITY;
     }
 
-    public static String getlTitle() {
-        return L_TITLE;
+    public static String getlText() {
+        return L_TEXT;
     }
 
     public static String getlDescription() { return L_DESCRIPTION; }

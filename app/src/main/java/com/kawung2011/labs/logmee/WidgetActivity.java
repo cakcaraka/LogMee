@@ -3,19 +3,15 @@ package com.kawung2011.labs.logmee;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
-import com.kawung2011.labs.logmee.lib.FloatingActionButton;
 
 import java.util.List;
 
@@ -34,7 +30,7 @@ public class WidgetActivity extends ActionBarActivity {
         if (extras != null)
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
-        setContentView(R.layout.activity_widget);
+        setContentView(R.layout.widget_activity);
         final Context context = WidgetActivity.this;
 
         recList = (RecyclerView) findViewById(R.id.cardList);

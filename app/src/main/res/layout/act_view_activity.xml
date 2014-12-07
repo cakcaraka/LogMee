@@ -7,23 +7,52 @@
 
     <include layout="@layout/toolbar" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/cekid"
-        android:layout_gravity="right" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/colorPrimary">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Log"
-        android:id="@+id/btnAddLog"
-        android:layout_gravity="left|top" />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/logsCardList"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Belajar Ngoding"
+            android:id="@+id/textActTitle"
+            android:layout_marginLeft="72dp"
+            android:layout_marginTop="24dp"
+            android:textSize="24sp"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Sun, 30 Nov 2014"
+            android:id="@+id/textActDate"
+            android:layout_marginLeft="72dp" />
+    </LinearLayout>
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent">
+        <View
+            android:id="@+id/vertical_line"
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#dddddd"
+            android:layout_marginLeft="40dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="13dp"
+            android:paddingTop="32dp"
+            android:paddingRight="16dp">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/logsCardList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

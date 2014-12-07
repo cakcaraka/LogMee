@@ -141,7 +141,7 @@ public class Activities {
 
     @Override
     public String toString(){
-        return this.get_id() + "," + this.get_name() + "," + this.get_status() + "," + this.get_image() + "," + this.get_dateTime();
+        return this.get_id() + "," + this.get_name() + "," + this.get_status() + "," + this.get_image() + "," + this.get_dateTime()+ "," + this.get_count_logs_text() + "," + this.get_count_logs_speech() + "," + this.get_count_logs_image();
     }
 
     public Bitmap getBitmap(){

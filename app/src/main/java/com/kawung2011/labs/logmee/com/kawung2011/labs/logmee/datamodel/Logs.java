@@ -18,7 +18,7 @@ import java.util.Date;
 public class Logs {
     private int _id;
     private int _activiy_id;
-    private String _title;
+    private String _text;
     private String _description;
     private String _image;
     private String _speech;
@@ -30,12 +30,12 @@ public class Logs {
     public Logs() {
 
     }
-    public Logs(int _activiy_id,String title){
-        this(_activiy_id,title, null ,null,null,null,null,null,new Timestamp(new Date().getTime()).toString());
+    public Logs(int _activiy_id,String text){
+        this(_activiy_id,text, null ,null,null,null,null,null,new Timestamp(new Date().getTime()).toString());
     }
-    public Logs(int _activiy_id, String _title, String _description, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
+    public Logs(int _activiy_id, String _text, String _description, String _image, String _speech, String _location, String _longitude, String _latitude, String _dateTime) {
         this._activiy_id = _activiy_id;
-        this._title = _title;
+        this._text = _text;
         this._description = _description;
         this._image = _image;
         this._speech = _speech;
@@ -61,12 +61,17 @@ public class Logs {
         this._activiy_id = _activiy_id;
     }
 
-    public String get_title() {
-        return _title;
+    public String get_text() {
+        return _text;
     }
 
+<<<<<<< HEAD
     public void set_title(String _text) {
         this._title = _text;
+=======
+    public void set_text(String _text) {
+        this._text = _text;
+>>>>>>> origin/master
     }
 
     public String get_image() {
@@ -158,8 +163,11 @@ public class Logs {
         this._latitude = _latitude;
     }
 
+    public boolean hasLocation(){
+        return get_latitude() != null && !get_latitude().equals("") && get_longitude() != null && !get_longitude().equals("");
+    }
     @Override
     public String toString(){
-        return this.get_id() + "," + this.get_activiy_id() + "," + this.get_title()+ "," + this.get_description() + "," + this.get_image() + "," + this.get_speech() + "," + this.get_location() + "," + this.get_longitude() + "," + this.get_latitude() + "," + this.get_dateTime();
+        return this.get_id() + "," + this.get_activiy_id() + "," + this.get_text()+ "," + this.get_description() + "," + this.get_image() + "," + this.get_speech() + "," + this.get_location() + "," + this.get_longitude() + "," + this.get_latitude() + "," + this.get_dateTime();
     }
 }

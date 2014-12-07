@@ -3,6 +3,7 @@ package com.kawung2011.labs.logmee;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,18 +11,23 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Activities;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.DBHandler;
 import com.kawung2011.labs.logmee.com.kawung2011.labs.logmee.datamodel.Logs;
+import com.kawung2011.labs.logmee.lib.FloatingActionButton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,28 +42,36 @@ public class ActViewActivity extends ActionBarActivity {
     private Activities act;
     private RecyclerView recList;
     private int id;
-
+    private DBHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_view_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        DBHandler db = new DBHandler(this, null);
-
+        db = new DBHandler(this,null);
         Intent intent = getIntent();
         id = intent.getIntExtra("_id", 0);
         act = db.findActivity(id);
-
+        if(act == null){
+            Toast.makeText(this,"activity missing, may have been deleted",Toast.LENGTH_SHORT).show();
+            finish();
+        }
         if (toolbar != null) {
-            toolbar.setTitle(act.get_name());
+            toolbar.setTitle("");
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+        FloatingActionButton fabButton = new FloatingActionButton.Builder(this)
+                .withDrawable(getResources().getDrawable(R.drawable.float_add))
+                .withButtonColor(Color.rgb(233, 30, 99))
+                .withGravity(Gravity.TOP | Gravity.LEFT)
+                .withButtonSize(64)
+                .withMargins(123, 0, 0, 8)
+                .create();
 
         final int ii = id;
-        Button button = (Button) findViewById(R.id.btnAddLog);
-        button.setOnClickListener(new View.OnClickListener() {
+        fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ActViewActivity.this, LogCreateActivity.class);
@@ -68,13 +82,20 @@ public class ActViewActivity extends ActionBarActivity {
             }
         });
 
+        ((TextView) findViewById(R.id.textActTitle)).setText(act.get_name());
+        ((TextView) findViewById(R.id.textActDate)).setText(act.get_dateTime());
+
         recList = (RecyclerView) findViewById(R.id.logsCardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
+        updateList("");
 
-        List<Logs> logs = db.fetchAllLogsById(id);
+    }
+
+    private void updateList(String query){
+        List<Logs> logs = db.fetchAllLogsById(id,query);
         LogAdapter actAdapter = new LogAdapter(logs, getApplicationContext(), ActViewActivity.this);
         recList.setAdapter(actAdapter);
         registerForContextMenu(recList);
@@ -163,28 +184,21 @@ public class ActViewActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_act_view, menu);
-
-        /*/MenuItem shareItem = menu.findItem(R.id.action_share);
-        ShareActionProvider myShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_TEXT, "Hello from android-er.blogspot.com");
-
-        myShareActionProvider.setShareIntent(intent);
-
-        /*shareItem.setOnMenuItemClickListener( new MenuItem.OnMenuItemClickListener() {
+        SearchView sv = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        sv.setQueryHint("search..");
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                String shareBody = "Here is the share content body";
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, "Share via"));
-
+            public boolean onQueryTextChange(String query) {
+                updateList(query);
                 return true;
             }
-        });*/
-        return true;
+            @Override
+            public boolean onQueryTextSubmit(String query)
+            {
+                return true;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }

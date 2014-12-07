@@ -3,6 +3,6 @@
     android:configure="com.kawung2011.labs.logmee.WidgetActivity"
     android:minWidth="40dp" android:minHeight="40dp" android:updatePeriodMillis="0"
     android:previewImage="@drawable/ic_logo"
-    android:initialLayout="@layout/log_mee_app_widget" android:resizeMode="horizontal|vertical"
+    android:initialLayout="@layout/widget_app" android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:initialKeyguardLayout="@layout/log_mee_app_widget"></appwidget-provider>
+    android:initialKeyguardLayout="@layout/widget_app"></appwidget-provider>

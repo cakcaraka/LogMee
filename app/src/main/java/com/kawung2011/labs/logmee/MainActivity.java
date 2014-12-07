@@ -1,6 +1,7 @@
 package com.kawung2011.labs.logmee;
 
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -25,7 +26,9 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private RecyclerView recList;
+    private static String last_seen = "";
     String title = "Logmee";
+    private int current_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,19 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ActAdminFragment())
+                    .add(R.id.container, ActAdminFragment.newInstance(this.last_seen,toolbar))
                     .commit();
+            findViewById(R.id.viewAll).setBackgroundColor(Color.parseColor("#ffffffff"));
+            int id = 0;
+            if(this.last_seen.equals("")){
+                id = R.id.viewAll;
+            }else if(this.last_seen.equals("0")){
+                id = R.id.viewOngoing;
+            }else if(this.last_seen.equals("1")){
+                id = R.id.viewDone;
+            }
+            findViewById(id).setBackgroundColor(Color.parseColor("#dddddd"));
+            current_id = id;
         }
 
     }
@@ -53,40 +67,92 @@ public class MainActivity extends ActionBarActivity {
     private void initDrawer() {
         //setup navigation drawer
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.txt_open, R.string.txt_close) {
+            private String lastTitle = "";
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                // when drawer closed
-                toolbar.setTitle(title);
+                if(toolbar.getTitle().equals("Choose Action")){
+                    toolbar.setTitle(lastTitle);
+                }
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 // when drawer open
-                toolbar.setTitle("Nav menu");
+                lastTitle = toolbar.getTitle().toString();
+                toolbar.setTitle("Choose Action");
             }
         };
 
         // setDrawerlisterner
         drawerLayout.setDrawerListener(drawerToggle);
 
-        LinearLayout set = (LinearLayout) findViewById(R.id.drawerSettings);
-        set.setOnClickListener(new View.OnClickListener() {
+        ((LinearLayout) findViewById(R.id.drawerSettings)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "abc", Toast.LENGTH_LONG).show();
-                changeFragment(new PlaceholderFragment());
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
+                //changeFragment(new PlaceholderFragment());
+                //drawerLayout.closeDrawers();
+            }
+        });
+        ((LinearLayout) findViewById(R.id.drawerFeedback)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
+                //changeFragment(new PlaceholderFragment());
+                //drawerLayout.closeDrawers();
+            }
+        });
+        ((LinearLayout) findViewById(R.id.drawerHelp)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
+                //changeFragment(new PlaceholderFragment());
+                //drawerLayout.closeDrawers();
+            }
+        });
+
+        ((LinearLayout) findViewById(R.id.viewAll)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                last_seen = ActAdminFragment.TYPE_ALL;
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ALL,toolbar),R.id.viewAll);
                 drawerLayout.closeDrawers();
             }
         });
+
+        ((LinearLayout) findViewById(R.id.viewOngoing)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                last_seen = ActAdminFragment.TYPE_ONGOING;
+
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_ONGOING,toolbar),R.id.viewOngoing);
+                drawerLayout.closeDrawers();
+            }
+        });
+
+        ((LinearLayout) findViewById(R.id.viewDone)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                last_seen = ActAdminFragment.TYPE_DONE;
+
+                changeFragment(ActAdminFragment.newInstance(ActAdminFragment.TYPE_DONE,toolbar),R.id.viewDone);
+                drawerLayout.closeDrawers();
+            }
+        });
+
     }
 
-    private void changeFragment(Fragment fr){
+    private void changeFragment(Fragment fr, int id){
+        findViewById(current_id).setBackgroundColor(Color.parseColor("#ffffffff"));
+        findViewById(id).setBackgroundColor(Color.parseColor("#dddddd"));
+        current_id = id;
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fr)
                 .commit();
+
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

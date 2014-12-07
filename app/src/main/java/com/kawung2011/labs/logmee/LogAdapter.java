@@ -45,9 +45,25 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
 
     @Override
     public void onBindViewHolder(LogViewHolder actViewHolder, int i) {
+<<<<<<< HEAD
         final Logs log = logList.get(i);
         actViewHolder.vName.setText(log.get_title());
         actViewHolder.vDate.setText(log.get_dateTime());
+=======
+        final Logs ci = logList.get(i);
+        actViewHolder.vName.setText(ci.get_text());
+        actViewHolder.vDate.setText(ci.get_dateTime());
+        if(ci.get_description() == null || ci.get_description().equals("")){
+            actViewHolder.vDescription.setVisibility(View.GONE);
+        }else{
+            actViewHolder.vDescription.setText(ci.get_description());
+        }
+        if(ci.hasLocation()){
+            actViewHolder.vLocation.setText("from " + ci.get_latitude() + "," + ci.get_longitude());
+        }else{
+            actViewHolder.vLocation.setVisibility(View.GONE);
+        }
+>>>>>>> origin/master
         actViewHolder.vView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -80,11 +96,19 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
             }
         });
 
+<<<<<<< HEAD
         if(actViewHolder.vLayout.getChildCount() == 2){
             Bitmap bm = log.get_image_bitmap();
+=======
+            ImageView iv = (ImageView) actViewHolder.vView.findViewById(R.id.logImage);
+            final Button btn = (Button) actViewHolder.vView.findViewById(R.id.logSound);
+            iv.setVisibility(View.GONE);
+            btn.setVisibility(View.GONE);
+            Bitmap bm = ci.get_image_bitmap();
+>>>>>>> origin/master
             if(bm != null){
-                ImageView iv = new ImageView(ctx);
                 iv.setImageBitmap(bm);
+<<<<<<< HEAD
                 actViewHolder.vLayout.addView(iv);
             }else if(!log.get_speech().equals("")){
                 final Button btn = new Button(ctx);
@@ -92,6 +116,17 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
                 btn.setText("Play");
 
                 final LogAudioPlayer pl = new LogAudioPlayer(log.get_speech(),btn);
+=======
+                iv.setVisibility(View.VISIBLE);
+                actViewHolder.vImage.setImageResource(R.drawable.mark_picture);
+            }else if(!ci.get_speech().equals("")){
+                actViewHolder.vImage.setImageResource(R.drawable.mark_sound);
+
+                btn.setVisibility(View.VISIBLE);
+                btn.setTag(false);
+                btn.setText("Play");
+                final LogAudioPlayer pl = new LogAudioPlayer(ci.get_speech(),btn);
+>>>>>>> origin/master
                 btn.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
@@ -108,10 +143,9 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
                         }
                     }
                 });
-                actViewHolder.vLayout.addView(btn);
+            }else{
+                actViewHolder.vImage.setImageResource(R.drawable.mark_note);
             }
-        }
-
     }
 
     @Override
@@ -125,14 +159,21 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
     public static class LogViewHolder extends RecyclerView.ViewHolder  {
         protected TextView vName;
         protected TextView vDate;
-        protected LinearLayout vLayout;
+        protected TextView vLocation;
+        protected TextView vDescription;
         protected View vView;
+        protected LinearLayout vLayout;
+        protected ImageView vImage;
         public LogViewHolder(View v) {
             super(v);
             vName =  (TextView) v.findViewById(R.id.textTitle);
             vDate =  (TextView) v.findViewById(R.id.textDate);
-            vLayout = (LinearLayout) v.findViewById(R.id.log_content);
             vView =v;
+            vLayout = (LinearLayout) v.findViewById(R.id.logLayout);
+            vImage = (ImageView) v.findViewById(R.id.imageMark);
+            vLocation = (TextView) v.findViewById(R.id.textLocation);
+            vDescription = (TextView) v.findViewById(R.id.textDescription);
+
         }
 
 

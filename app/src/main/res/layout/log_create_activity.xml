@@ -41,6 +41,13 @@
 
                 android:hint="Description" />
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/textLocation"
+                android:textColor="@android:color/black" />
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -74,7 +81,7 @@
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageButton4"
+                    android:id="@+id/btnAddLocation"
                     android:background="#ffffff"
                     android:src="@drawable/add_location" />
             </LinearLayout>
