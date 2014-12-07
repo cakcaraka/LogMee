@@ -45,9 +45,9 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
 
     @Override
     public void onBindViewHolder(LogViewHolder actViewHolder, int i) {
-        final Logs ci = logList.get(i);
-        actViewHolder.vName.setText(ci.get_title());
-        actViewHolder.vDate.setText(ci.get_dateTime());
+        final Logs log = logList.get(i);
+        actViewHolder.vName.setText(log.get_title());
+        actViewHolder.vDate.setText(log.get_dateTime());
         actViewHolder.vView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -59,15 +59,15 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals("Update")) {
                             Intent intent = new Intent(_activityContext, LogCreateActivity.class);
-                            intent.putExtra("_id", ci.get_activiy_id());
-                            intent.putExtra("log_id", ci.get_id());
+                            intent.putExtra("_id", log.get_activiy_id());
+                            intent.putExtra("log_id", log.get_id());
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             ctx.startActivity(intent);
                         } else if (options[item].equals("Delete")) {
                             Intent intent = new Intent(_activityContext, ActViewActivity.class);
                             DBHandler db = new DBHandler(_activityContext, null);
-                            db.deleteLog(ci);
-                            intent.putExtra("_id", ci.get_activiy_id());
+                            db.deleteLog(log);
+                            intent.putExtra("_id", log.get_activiy_id());
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             ctx.startActivity(intent);
@@ -81,17 +81,17 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
         });
 
         if(actViewHolder.vLayout.getChildCount() == 2){
-            Bitmap bm = ci.get_image_bitmap();
+            Bitmap bm = log.get_image_bitmap();
             if(bm != null){
                 ImageView iv = new ImageView(ctx);
                 iv.setImageBitmap(bm);
                 actViewHolder.vLayout.addView(iv);
-            }else if(!ci.get_speech().equals("")){
+            }else if(!log.get_speech().equals("")){
                 final Button btn = new Button(ctx);
                 btn.setTag(false);
                 btn.setText("Play");
 
-                final LogAudioPlayer pl = new LogAudioPlayer(ci.get_speech(),btn);
+                final LogAudioPlayer pl = new LogAudioPlayer(log.get_speech(),btn);
                 btn.setOnClickListener(new View.OnClickListener()
                 {
                     @Override

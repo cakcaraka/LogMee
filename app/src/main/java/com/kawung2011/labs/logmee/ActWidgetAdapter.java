@@ -76,7 +76,7 @@ public class ActWidgetAdapter extends RecyclerView.Adapter<ActWidgetAdapter.ActV
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(ctx, activity.get_id(), intent, 0);
-
+                db.addAWidgetData(WidgetActivity.appWidgetId, activity.get_id());
 
                 RemoteViews views = new RemoteViews(ctx.getPackageName(), R.layout.log_mee_app_widget);
                 views.setTextViewText(R.id.appwidget_text, activity.get_name());

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,12 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String L_LOCATION_LATITUDE = "latitude";
     private static final String L_DATE_TIME = "dateTime";
 
+    //table widget
+    private static final String TABLE_WIDGET = "widgets";
+    private static final String W_ID = "_id";
+    private static final String W_WIDGET_ID = "widgetId";
+    private static final String W_ACTIVITY_ID = "activityId";
+
     //Constructor
     public DBHandler(Context context, SQLiteDatabase.CursorFactory factory)  {
         super(context, DB_NAME, factory, DB_VERSION);
@@ -69,40 +76,41 @@ public class DBHandler extends SQLiteOpenHelper {
                 L_DATE_TIME + " text)";
         db.execSQL(sql);
 
+        sql = "create table " + TABLE_WIDGET + " (" + W_ID + " integer primary key AUTOINCREMENT NOT NULL, " +
+                W_WIDGET_ID + " integer, " +
+                W_ACTIVITY_ID + " integer)";
+        db.execSQL(sql);
+
         //sql = "create table widgetData ( _id integer primary key AUTOINCREMENT NOT NULL, id_pendingIntent integer)";
         //db.execSQL(sql);
         //insertSomeData(db);
     }
-  /*  public void addAWidgetPendingIntent(int pendingIntentId) {
+    public void addAWidgetData(int widgetId, int activityId) {
         ContentValues values = new ContentValues();
-        values.put("id_pendingIntent", pendingIntentId);
+        values.put(W_WIDGET_ID, widgetId);
+        values.put(W_ACTIVITY_ID, activityId);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert("widgetData", null, values);
+        db.insert(TABLE_WIDGET, null, values);
         db.close();
-    }*/
-
-    /*public int findWidgetActivityId() {
-        String query = "Select * FROM widgetData where _id = 1";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        int activity_id = -1;
-        if (cursor.moveToFirst()) {
-            cursor.moveToFirst();
-            cursor.getString(0);
-            activity_id = Integer.parseInt(cursor.getString(1));
-            cursor.close();
-        }
-        db.close();
-        return activity_id;
     }
 
-    public void updateWidgetActivityId(int activity_id) {
-        ContentValues values = new ContentValues();
-        values.put("id_activity", activity_id);
+    public Widgets findWidget(int widgetId) {
+        String query = "Select * FROM " + TABLE_WIDGET + " WHERE " + W_WIDGET_ID + " = " + widgetId;
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update("widgetData", values, "_id = 1", null );
+        Cursor cursor = db.rawQuery(query, null);
+        Widgets widget = new Widgets();
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            widget.set_id(Integer.parseInt(cursor.getString(0)));
+            widget.set_widgetId((Integer.parseInt(cursor.getString(1))));
+            widget.set_activityId((Integer.parseInt(cursor.getString(2))));
+            cursor.close();
+        } else {
+            widget = null;
+        }
         db.close();
-    }*/
+        return widget;
+    }
 
 
     private void insertSomeData(SQLiteDatabase db) {
@@ -122,6 +130,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists " + TABLE_ACTIVITIES);
         db.execSQL("drop table if exists " + TABLE_LOGS);
+        db.execSQL("drop table if exists " + TABLE_WIDGET);
         onCreate(db);
     }
 
@@ -288,8 +297,8 @@ public class DBHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Activities activity = findActivity(db, log.get_activiy_id());
-        values.put(L_TITLE, log.get_title());
 
+        values.put(L_TITLE, log.get_title());
         values.put(L_DESCRIPTION, log.get_description());
         if(log.get_description() != null) activity.set_count_logs_text(activity.get_count_logs_text()+1);
         values.put(L_IMG, log.get_image());

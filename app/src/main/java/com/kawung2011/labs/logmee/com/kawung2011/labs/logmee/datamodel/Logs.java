@@ -66,7 +66,7 @@ public class Logs {
     }
 
     public void set_title(String _text) {
-        this._title = _title;
+        this._title = _text;
     }
 
     public String get_image() {
