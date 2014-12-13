@@ -1,10 +1,27 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kawung2011.labs.logmee.FeedbackFragment">
+    tools:context="com.kawung2011.labs.logmee.FeedbackFragment"
+    android:id="@+id/feebackfragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Content"
+        android:id="@+id/textViewContent"
+        android:layout_gravity="left|top" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/email_button"
+        android:layout_gravity="center" />
+
+    <EditText
+        android:layout_width="246dp"
+        android:layout_height="153dp"
+        android:id="@+id/editTextEmailContent"
+        android:layout_gravity="center_horizontal|top" />
 
 </FrameLayout>

@@ -57,6 +57,8 @@ public class MainActivity extends ActionBarActivity {
                 id = R.id.viewOngoing;
             }else if(this.last_seen.equals("1")){
                 id = R.id.viewDone;
+            }else if(this.last_seen.equals("about")) {
+                id = R.id.drawerAbout;
             }
             findViewById(id).setBackgroundColor(Color.parseColor("#dddddd"));
             current_id = id;
@@ -96,10 +98,20 @@ public class MainActivity extends ActionBarActivity {
                 //drawerLayout.closeDrawers();
             }
         });
+        ((LinearLayout) findViewById(R.id.drawerAbout)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeFragment(AboutFragment.newInstance(toolbar),R.id.drawerAbout);
+                drawerLayout.closeDrawers();
+            }
+        });
         ((LinearLayout) findViewById(R.id.drawerFeedback)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
+                changeFragment(FeedbackFragment.newInstance(toolbar),R.id.drawerFeedback);
+                drawerLayout.closeDrawers();
+
+
                 //changeFragment(new PlaceholderFragment());
                 //drawerLayout.closeDrawers();
             }

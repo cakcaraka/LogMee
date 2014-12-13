@@ -202,4 +202,35 @@
                 android:paddingLeft="22dp"
                 android:paddingRight="0dp"/>
         </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:id="@+id/drawerAbout"
+
+            android:clickable="true">
+
+            <ImageView
+                android:src="@drawable/ic_alert_circle_grey"
+                android:layout_width="24dp"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView5"
+                android:maxWidth="72dp"
+                android:focusable="true"
+                android:paddingTop="1dp"
+                android:layout_marginLeft="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="About"
+                android:id="@+id/textView7"
+                android:layout_gravity="right"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:paddingTop="16dp"
+                android:paddingLeft="22dp"
+                android:paddingRight="0dp"/>
+        </LinearLayout>
     </LinearLayout>
