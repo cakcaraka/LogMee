@@ -89,7 +89,7 @@ public class ActWidgetAdapter extends RecyclerView.Adapter<ActWidgetAdapter.ActV
 
 
                 RemoteViews views = new RemoteViews(ctx.getPackageName(), R.layout.widget_app);
-                views.setTextViewText(R.id.appwidget_text, "LogMee - " + activity.get_name());
+                views.setTextViewText(R.id.appwidget_text,  activity.get_name());
                 Bitmap bm = activity.getBitmap();
                 if(bm == null){
                     int jj = activity.get_id() % 3;
