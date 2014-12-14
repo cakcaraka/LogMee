@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.Gallery;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -30,11 +31,11 @@ public class MainActivity extends ActionBarActivity {
     String title = "Logmee";
     private int current_id;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -90,6 +91,15 @@ public class MainActivity extends ActionBarActivity {
         // setDrawerlisterner
         drawerLayout.setDrawerListener(drawerToggle);
 
+        ((LinearLayout) findViewById(R.id.drawerHelp)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                changeFragment(HelpFragment.newInstance(toolbar, getApplicationContext(), getWindowManager().getDefaultDisplay()), R.id.drawerHelp);
+                drawerLayout.closeDrawers();
+            }
+        });
+
         ((LinearLayout) findViewById(R.id.drawerSettings)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,14 +122,6 @@ public class MainActivity extends ActionBarActivity {
                 drawerLayout.closeDrawers();
 
 
-                //changeFragment(new PlaceholderFragment());
-                //drawerLayout.closeDrawers();
-            }
-        });
-        ((LinearLayout) findViewById(R.id.drawerHelp)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_LONG).show();
                 //changeFragment(new PlaceholderFragment());
                 //drawerLayout.closeDrawers();
             }

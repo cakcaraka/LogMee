@@ -24,6 +24,7 @@ public class FeedbackFragment extends Fragment {
         FeedbackFragment fragment = new FeedbackFragment();
         Bundle args = new Bundle();
         toolbar.setTitle("Feedback");
+
         return fragment;
     }
 
