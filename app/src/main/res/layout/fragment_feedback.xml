@@ -1,31 +1,32 @@
-
+<!--suppress ALL -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:weightSum="1">
-
-
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Give feedback to us!"
-    android:textColor="@color/black"
-    android:id="@+id/textViewContent"
-    android:layout_gravity="left|top" />
-
-    <EditText
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="103dp"
-    android:textColor="@color/black"
-    android:id="@+id/editTextEmailContent" />
-
-    <Button
-        android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.kawung2011.labs.logmee.FeedbackFragment"
+    >
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/editTextEmailContent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:id="@+id/email_button" />
+        android:hint="Feedback"
+        android:textColor="#000000"
+        android:textColorHint="#dddddd"
+        android:textCursorDrawable="@drawable/cursor_color"
+        app:primaryColor="#3f51b5"
+        app:floatingLabel="highlight"
+        app:maxCharacters="1000"
+        />
 
 
-</LinearLayout>
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"
+            android:id="@+id/email_button" />
+    </LinearLayout>
+
+

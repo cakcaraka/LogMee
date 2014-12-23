@@ -53,10 +53,10 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="2dp">
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:layout_width="18dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/imageView9"
                         android:src="@drawable/ic_file_document_box_grey" />
@@ -73,7 +73,7 @@
                         android:gravity="center_vertical" />
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:layout_width="18dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/imageView10"
                         android:src="@drawable/ic_file_image_box_grey"
@@ -90,7 +90,7 @@
                         android:gravity="center_vertical" />
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:layout_width="18dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/imageView11"
                         android:src="@drawable/ic_microphone_grey"

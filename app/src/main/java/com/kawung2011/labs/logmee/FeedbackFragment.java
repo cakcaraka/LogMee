@@ -70,7 +70,7 @@ public class FeedbackFragment extends Fragment {
 
                 /* Fill it with Data */
                 emailIntent.setType("plain/text");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ "numan.naufal@ui.ac.id" });
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ "kawung.labs@gmail.com" });
 
 
                 EditText emailContentEditText = (EditText) v.findViewById(R.id.editTextEmailContent);

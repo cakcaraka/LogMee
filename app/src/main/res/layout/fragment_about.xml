@@ -6,45 +6,53 @@
     android:weightSum="1">
 
 
+    <ImageView
+        android:layout_width="121dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@drawable/ic_launcher"
+        android:layout_weight="0.23"
+        android:layout_gravity="center_horizontal" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="LogMee is an activity log documenting app for your productivity."
-        android:id="@+id/textView" />
+        android:text="an activity log documenting app for your productivity."
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="\nDeveloped by kawung labs:"
-        android:id="@+id/textView1" />
+        android:id="@+id/textView1"
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="- Caraka Nur Azmi"
-        android:id="@+id/textView2" />
+        android:text="Caraka Nur Azmi (@cakcaraka)"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="- Nu'man Naufal"
-        android:id="@+id/textView3" />
+        android:text="Nu&apos;man Naufal (@numan_naufal)"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="- Putu Agya Paramartha"
-        android:id="@+id/textView4" />
+        android:text="Putu Agya Paramartha(@putuagya)"
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:text="\nThank you for using LogMee. \nPlease Rate us!"
-        android:id="@+id/textView5" />
 </LinearLayout>

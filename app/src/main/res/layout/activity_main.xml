@@ -24,7 +24,7 @@
             android:paddingRight="8dp"
             android:orientation="vertical"
             android:id="@+id/container"
-            android:background="#ddd">
+            android:background="#f2f2f2">
 
         </LinearLayout>
         <!-- nav drawer -->

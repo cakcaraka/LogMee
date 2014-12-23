@@ -33,7 +33,8 @@
     </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#ffffff">
         <View
             android:id="@+id/vertical_line"
             android:layout_width="1dp"
@@ -45,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="13dp"
-            android:paddingTop="32dp"
+            android:paddingTop="0dp"
             android:paddingRight="16dp">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/logsCardList"

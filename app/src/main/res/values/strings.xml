@@ -8,6 +8,12 @@
     <string name="txt_close">Close</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
+    <string name="about">About</string>
+    <string name="action_help">Help</string>
+    <string name="action_feedback">Feedback</string>
+    <string name="action_all">All</string>
+    <string name="action_done">Done</string>
+    <string name="action_undone">Undone</string>
 
     <string-array name="title">
         <item>Test 1</item>
@@ -29,5 +35,6 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="title_activity_widget">WidgetActivity</string>
+    <string name="action_create">Create</string>
 
 </resources>

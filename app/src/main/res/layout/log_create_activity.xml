@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.kawung2011.labs.logmee.LogCreateActivity">
@@ -15,31 +16,39 @@
             android:layout_width="match_parent"
             android:background="@android:color/white"
             android:layout_height="match_parent"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
           >
 
 
-            <EditText
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/editText_log_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText_log_title"
-                android:textColor="#000000"
                 android:hint="Title"
-                android:textColorHint="#8c000000"
+                android:textColor="#000000"
+                android:textColorHint="#dddddd"
+                android:textCursorDrawable="@drawable/cursor_color"
+                app:primaryColor="#3f51b5"
+                app:floatingLabel="highlight"
+                app:singleLineEllipsis="true"
+                app:maxCharacters="50"
+                />
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/editText_log_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:textColor="#000000"
+                android:textColorHint="#dddddd"
+                android:textCursorDrawable="@drawable/cursor_color"
+                app:primaryColor="#3f51b5"
+                app:floatingLabel="highlight"
+                app:maxCharacters="150"
                 />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:id="@+id/editText_log_desc"
-                android:textColor="#000000"
-                android:textColorHint="#8c000000"
 
-                android:hint="Description" />
 
             <TextView
                 android:layout_width="fill_parent"
